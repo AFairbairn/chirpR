@@ -1,13 +1,15 @@
 Package: bnanalysis
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Helpful Functions For Analyzing BirdNet Analyze Results
+Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: GPL (>= 3)
+    person("Andrew J.", "Fairbairn", , "andrew.fairbairn@tum.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2826-3465"))
+Description: A collection of functions for analying BirdNet Analyze results.
+    These functions can be used to create a semi-automated analysis pipeline.
+License: GNU GPL v3.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+URL: https://github.com/AFairbairn/bnanalysis.git
 Imports:
-  data.table (>= 1.14.6)
+  data.table
