@@ -10,14 +10,18 @@
 #' @return A dataframe of all .csv files in path
 #' @export
 combine_results <- function(path, recursive=T) {
+  # Get list of files
   files <- list.files(path = path, pattern = "\\.csv$", full.names = TRUE,
                         recursive = recursive)
+  # End if no files are found and give stop warning
   if (length(files) == 0) {
     stop("No files found in directory")
   }
-  #names(files) <- sub("\\..*", ".wav", basename(files))
+  # Load all files in to "result"
   result <- data.table::rbindlist(sapply(files, data.table::fread,simplify = FALSE), idcol = "path")
+  # Create fileName column
   result$fileName <- with(result, sub("\\..*", ".wav", basename(path)))
+  # Rename all columns
   colnames(result) <- c("path","start","end","scientificName","commonName","confidence","fileName")
   return(result)
 }
