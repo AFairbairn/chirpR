@@ -55,3 +55,13 @@ You can also embed plots, for example:
 
 In that case, don’t forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
+
+-   Features to add:
+    -   The ability to accept multiple output formats for
+        combine_results.
+    -   Function to create output tables for, for example, strange
+        detections in Kaleidoscope or other.
+    -   Function for calculating species frequency - i.e. “minute calls”
+        VAR “Voval Activity Rate”
+    -   Visualization functions for the bird community - see Sethi
+        Norway paper for e.g.
