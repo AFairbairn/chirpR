@@ -7,13 +7,12 @@
 <!-- badges: end -->
 
 The goal of bnanalysis is to provide a collection of functions for
-analying BirdNet Analyze results. These functions can be used to create
-a semi-automated analysis pipeline.
+running BirdNet and analyzing BirdNet results. These functions can be
+used to create a semi-automated analysis pipeline.
 
 ## Installation
 
-You can install the development version of bnanalysis from
-[GitHub](https://github.com/) with:
+You can install bnanalysis from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -26,7 +25,14 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(bnanalysis)
-## basic example code
+## Install BirdNet
+getBN()
+
+## Run BirdNet using default settings
+## i is the input files path, as in BirdNet-Analyze
+## o is the output path, as in BirdNet Analyze
+results <- analyze(i="C:/recordings", o="C:/results")
+head(results)
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`?
@@ -56,12 +62,11 @@ You can also embed plots, for example:
 In that case, don’t forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
 
--   Features to add:
-    -   The ability to accept multiple output formats for
-        combine_results.
-    -   Function to create output tables for, for example, strange
-        detections in Kaleidoscope or other.
-    -   Function for calculating species frequency - i.e. “minute calls”
-        VAR “Voval Activity Rate”
-    -   Visualization functions for the bird community - see Sethi
-        Norway paper for e.g.
+- Features to add:
+  - The ability to accept multiple output formats for combine_results.
+  - Function to create output tables for, for example, strange
+    detections in Kaleidoscope or other.
+  - Function for calculating species frequency - i.e. “minute calls” VAR
+    “Voval Activity Rate”
+  - Visualization functions for the bird community - see Sethi Norway
+    paper for e.g.
