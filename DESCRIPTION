@@ -13,3 +13,4 @@ RoxygenNote: 7.2.3
 URL: https://github.com/AFairbairn/bnanalysis.git
 Imports:
   data.table
+  reticulate
