@@ -11,7 +11,17 @@
 #' @param result Logical, determines if you want to import the result as a dataframe defaults True
 #' @return Nothing or a CSV file with the species detection results
 #' @export
-analyze <- function(i, o, rtype=csv, ..., result=TRUE){
+analyze <- function(i, o=getwd(), rtype=csv, ..., result=TRUE){
+  if(o == getwd()){
+    o = file.path(o, "bnResults")
+    if(!dir.exists(reswd)){
+      dir.create(reswd)
+    }
+  }
 
 
+
+  path=path.expand("~")
+  path=file.path(path, "BirdNET-Analyzer")
+  system(paste0(path, "&& python"))
 }

@@ -11,14 +11,14 @@
 #' @export
 combRes <- function(path, recursive=T) {
   # Get list of files
-  files <- list.files(path = path, pattern = "\\.csv$", full.names = TRUE,
+  files = list.files(path = path, pattern = "\\.csv$", full.names = TRUE,
                         recursive = recursive)
   # End if no files are found and give stop warning
   if (length(files) == 0) {
     stop("No files found in directory")
   }
   # Load all files in to "result"
-  result <- data.table::rbindlist(sapply(files, data.table::fread,simplify = FALSE), idcol = "path")
+  result = data.table::rbindlist(sapply(files, data.table::fread,simplify = FALSE), idcol = "path")
   # Create fileName column
   result[, fileName := sub("\\..*", ".wav", basename(path))]
   # Rename all columns
