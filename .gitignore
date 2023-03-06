@@ -60,3 +60,7 @@ rsconnect/
 # End of https://www.toptal.com/developers/gitignore/api/r
 .Rdata
 .DS_Store
+
+# Any testing related files
+bnResults/
+rnet/
