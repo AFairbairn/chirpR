@@ -1,0 +1,58 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.4.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "bnanalysis" in publications use:'
+type: software
+license: GPL-3.0-or-later
+title: 'bnanalysis: Helpful Functions For Analyzing BirdNet Analyze Results'
+version: 0.0.1
+abstract: A collection of functions for analying BirdNet Analyze results. These functions
+  can be used to create a semi-automated analysis pipeline.
+authors:
+- family-names: Fairbairn
+  given-names: Andrew J.
+  email: andrew.fairbairn@tum.de
+  orcid: https://orcid.org/0000-0002-2826-3465
+repository-code: https://github.com/AFairbairn/bnanalysis.git
+url: https://github.com/AFairbairn/bnanalysis.git
+contact:
+- family-names: Fairbairn
+  given-names: Andrew J.
+  email: andrew.fairbairn@tum.de
+  orcid: https://orcid.org/0000-0002-2826-3465
+references:
+- type: software
+  title: data.table
+  abstract: 'data.table: Extension of `data.frame`'
+  notes: Imports
+  url: https://r-datatable.com
+  repository: https://CRAN.R-project.org/package=data.table
+  authors:
+  - family-names: Dowle
+    given-names: Matt
+    email: mattjdowle@gmail.com
+  - family-names: Srinivasan
+    given-names: Arun
+    email: asrini@pm.me
+  year: '2023'
+- type: software
+  title: reticulate
+  abstract: 'reticulate: Interface to ''Python'''
+  notes: Imports
+  url: https://rstudio.github.io/reticulate/
+  repository: https://CRAN.R-project.org/package=reticulate
+  authors:
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevin@rstudio.com
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@rstudio.com
+  - family-names: Tang
+    given-names: Yuan
+    email: terrytangyuan@gmail.com
+    orcid: https://orcid.org/0000-0001-5243-233X
+  year: '2023'
