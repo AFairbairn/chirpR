@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# bnanalysis: [BirdNet Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
+# bnanalysis: [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
 
 <!-- badges: start -->
 
@@ -13,13 +13,13 @@ v3.0](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://cran.r-
 
 ## Description
 
-bnanalysis is both a wrapper around
-[BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) and a tool
-for analyzing results derived from BirdNet. It allows users to run
-BirdNet directly from R. bnanalysis provides a collection of functions
-for installing, running BirdNet and analyzing BirdNet results.
-bnanalysis was developed as a tool to create a semi-automated analysis
-pipeline.
+`bnanalysis` is an R package that simplifies the process of analyzing
+and interpreting BirdNet data. It provides a user-friendly wrapper for
+[BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing
+users to easily install and run BirdNet directly from R. Additionally,
+`bnanalysis` includes a collection of functions for analyzing and
+visualizing BirdNet output. Developed with a semi-automated analysis
+pipeline in mind, `bnanalysis` streamlines the BirdNet analysis process.
 
 - Features to-do list:
   - Support for operating systems other than Windows.
