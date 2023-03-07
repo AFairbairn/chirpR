@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 # bnanalysis: [BirdNet Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
 
 <!-- badges: start -->
-```{r echo = FALSE}
-badger::badge_lifecycle("experimental")
-badger::badge_repostatus("Active")
+```{r }
+badger::badge_lifecycle("experimental", "red")
+badger::badge_repostatus("Active", "green")
 badger::badge_license("GPL v3.0")
 ```
 <!-- badges: end -->
@@ -42,7 +42,7 @@ devtools::install_github("AFairbairn/bnanalysis")
 
 This is a basic example which shows you how to install and use BirdNet:
 
-```{r echo = FALSE}
+```{r }
 library(bnanalysis)
 
 setwd("D:/myProject")
@@ -53,7 +53,7 @@ getBN()
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
 results <- analyze(i="D:/acoustic recordings")
-head(results)
+head(results[,c(4:6)])
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
