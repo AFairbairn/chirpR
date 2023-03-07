@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyze.R
 \name{analyze}
 \alias{analyze}
-\title{analyze calls the BirdNet analayze function and returns the results or nothing}
+\title{analyze calls the BirdNet analayze function and returns the results as a dataframe}
 \usage{
 analyze(i, o, rtype = "r", ..., result = TRUE, path)
 }
@@ -23,10 +23,27 @@ analyze(i, o, rtype = "r", ..., result = TRUE, path)
 Nothing or a CSV file with the species detection results
 }
 \description{
-This takes in a path to the results folder where the BirdNet results .csv
-files are. This also assumes that you chose the .csv output for BirdNet.
-It cannot work with other output formats! This function utilizes list.files
-to get the file list recursive=T is default.
+analyze is essentially a wrapper for the BirdNet python script analyze.py. It
+all the same parameters. See below:
+i, Path to input file or folder. If this is a file, o needs to be a file too.
+o, Path to output file or folder. If this is a file, i needs to be a file too.
+lat, Recording location latitude. Set -1 to ignore.
+lon, Recording location longitude. Set -1 to ignore.
+week, Week of the year when the recording was made. Values in \link{1, 48} (4 weeks per month). Set -1 for year-round species list.
+slist, Path to species list file or folder. If folder is provided, species list needs to be named "species_list.txt". If lat and lon are provided, this list will be ignored.
+sensitivity, Detection sensitivity; Higher values result in higher sensitivity. Values in \link{0.5, 1.5}. Defaults to 1.0.
+min_conf, Minimum confidence threshold. Values in \link{0.01, 0.99}. Defaults to 0.1.
+overlap, Overlap of prediction segments. Values in \link{0.0, 2.9}. Defaults to 0.0.
+rtype, Specifies output format. Values in \link{'table', 'audacity', 'r', 'csv'}. Defaults to 'table' (Raven selection table).
+threads, Number of CPU threads.
+batchsize, Number of samples to process at the same time. Defaults to 1.
+locale, Locale for translated species common names. Values in \link{'af', 'de', 'it', ...} Defaults to 'en'.
+sf_thresh, Minimum species occurrence frequency threshold for location filter. Values in \link{0.01, 0.99}. Defaults to 0.03.
+}
+\details{
+For more details see BirdNet-Analyzer on GitHub: https://github.com/kahst/BirdNET-Analyzer
+
+If BirdNet was not installed using getBN you must set path.
 }
 \examples{
 \dontrun{
