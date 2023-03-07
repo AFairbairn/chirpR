@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R build
+status](https://github.com/Afairbairn/bnanalysis/workflows/R-CMD-check/badge.svg)](https://github.com/Afairbairn/bnanalysis/actions)
 [![green](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License: GPL
 v3.0](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://cran.r-project.org/web/licenses/GPL%20v3.0)
@@ -30,11 +32,12 @@ pipeline in mind, `bnanalysis` streamlines the BirdNet analysis process.
 
 ## About
 
-Developed by Andrew Fairbairn
+Developed by 🦜Andrew Fairbairn
 
-[Homepage](https://afairbairn.com/) [Chair for Terrestrial
-Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of
-Munich
+[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/),
+Technical University of Munich
+
+[Homepage](https://afairbairn.com/)
 
 ## Installation
 

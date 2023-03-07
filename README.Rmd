@@ -23,6 +23,7 @@ library("badger")
 ```{r, echo = FALSE, results='asis'}
 cat(
 	badge_lifecycle("experimental", "red"),
+	badge_github_actions("Afairbairn/bnanalysis"),
   badge_repostatus("Active", "green"),
   badge_license("GPL v3.0")
 )
@@ -42,10 +43,11 @@ cat(
 
 ## About
 
-Developed by Andrew Fairbairn
+Developed by 🦜Andrew Fairbairn
+
+[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
 
 [Homepage](https://afairbairn.com/)
-[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
 
 
 ## Installation
