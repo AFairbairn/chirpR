@@ -9,18 +9,37 @@
 [![green](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License: GPL
 v3.0](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://cran.r-project.org/web/licenses/GPL%20v3.0)
-
 <!-- badges: end -->
-
-## Author
-
-Andrew Fairbairn <https://afairbairn.com/>
 
 ## Description
 
-bnanalysis is to provides a collection of functions for installing,
-running BirdNet and analyzing BirdNet results. These functions can be
-used to create a semi-automated analysis pipeline.
+bnanalysis is both a wrapper around [BirdNet
+Analyzer](https://github.com/kahst/BirdNET-Analyzer) and a tool for
+analyzing results derived from BirdNet. It allows users to run BirdNet
+directly from R. bnanalysis provides a collection of functions for
+installing, running BirdNet and analyzing BirdNet results. bnanalysis
+was developed as a tool to create a semi-automated analysis pipeline.
+
+- Features to-do list:
+  - Support for operating systems other than Windows.
+  - Function to create output tables for, for example, odd detections in
+    Kaleidoscope or other.
+  - Function for calculating VAR “Vocal Activity Rate”
+  - Visualization functions for the bird community
+
+bnanalysis is licensed under
+
+## About
+
+Developed by Andrew Fairbairn
+
+<img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/house.svg" width="50" height="50">
+<https://afairbairn.com/>
+<img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/briefcase.svg" width="50" height="50">
+[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/),
+Technical University of Munich
+<img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/brands/researchgate.svg" width="50" height="50">
+<img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/brands/square-twitter.svg" width="50" height="50">
 
 ## Installation
 
@@ -58,12 +77,3 @@ head(results[,c(4:6)])
 #> 5:          Turdus merula Eurasian Blackbird     0.4060
 #> 6:     Turdus migratorius     American Robin     0.1313
 ```
-
-- Features to-do list:
-  - Support for operating systems other than Windows.
-  - Function to create output tables for, for example, odd detections in
-    Kaleidoscope or other.
-  - Function for calculating species frequency - i.e. “minute calls” VAR
-    “Vocal Activity Rate”
-  - Visualization functions for the bird community - see Sethi Norway
-    paper for e.g.
