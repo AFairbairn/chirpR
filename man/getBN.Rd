@@ -2,18 +2,23 @@
 % Please edit documentation in R/getBN.R
 \name{getBN}
 \alias{getBN}
-\title{gets latest version of BirdNet from github}
+\title{Gets the latest version of BirdNet from github}
 \usage{
-getBN(path = path.expand("~"), remove = TRUE)
+getBN(path = path.expand("~"), remove = TRUE, ...)
 }
 \arguments{
 \item{path}{Path to save BirdNet, defaults to home directory.}
 
-\item{remove}{Logical, removes or keeps .zip file, default=True}
+\item{remove}{Logical, removes the downloaded .zip file, default=True}
 
 \item{...}{Other parameters to be passed to download.file()}
 }
 \description{
 getBN downloads the latest version of BirdNet from github and installs
-it in the users home directory, unless otherwise specified.
+it and the necessary python libraries in the users home directory,
+unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
+}
+\examples{
+getBn()
+getBn(path="C:/projectFolder/")
 }

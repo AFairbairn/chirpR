@@ -4,10 +4,12 @@
 \alias{combRes}
 \title{Combines BirdNet results files and adds a column for the .wave file name}
 \usage{
-combRes(path, recursive = T)
+combRes(path, rtype = "r", recursive = T)
 }
 \arguments{
 \item{path}{The path to the folder containing the .csv files.}
+
+\item{rtype}{The BirdNet output file type. Defaults to r.}
 
 \item{recursive}{Defaults to True}
 }

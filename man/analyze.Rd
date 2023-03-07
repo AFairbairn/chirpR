@@ -4,16 +4,20 @@
 \alias{analyze}
 \title{analyze calls the BirdNet analayze function and returns the results or nothing}
 \usage{
-analyze(i, o, rtype = csv, ..., result = TRUE)
+analyze(i, o, rtype = "r", ..., result = TRUE, path)
 }
 \arguments{
 \item{i}{Path to input .wav files for BirdNet analysis.}
 
 \item{o}{Output file location}
 
+\item{rtype}{The output file type. Defaults to r}
+
 \item{...}{Other parameters to be passed to analyze.py}
 
 \item{result}{Logical, determines if you want to import the result as a dataframe defaults True}
+
+\item{path}{If specifying the location of BirdNet. If installed with this package, leave blank.}
 }
 \value{
 Nothing or a CSV file with the species detection results

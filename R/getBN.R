@@ -1,15 +1,17 @@
-#' gets latest version of BirdNet from github
+#' Gets the latest version of BirdNet from github
 #'
 #' getBN downloads the latest version of BirdNet from github and installs
 #' it and the necessary python libraries in the users home directory,
-#' unless otherwise specified.
+#' unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
 #'
 #' @param path Path to save BirdNet, defaults to home directory.
-#' @param remove Logical, removes or keeps .zip file, default=True
+#' @param remove Logical, removes the downloaded .zip file, default=True
 #' @param ... Other parameters to be passed to download.file()
 #' @export
-#'
-getBN <- function(path = path.expand("~"), remove = TRUE) {
+#' @examples
+#' getBn()
+#' getBn(path="C:/projectFolder/")
+getBN <- function(path = path.expand("~"), remove = TRUE, ...) {
   downloadPath = file.path(path, "BirdNET-Analyzer")
   bnPath = file.path(downloadPath, "BirdNet-Analyzer-main")
   # Check for directory, if doesn't exist, create
@@ -19,7 +21,7 @@ getBN <- function(path = path.expand("~"), remove = TRUE) {
     # Download BirdNet analyzer
     file=file.path(downloadPath, "BirdNET-Analyzer.zip")
     value = download.file("https://github.com/kahst/BirdNET-Analyzer/archive/refs/heads/main.zip",
-                          file)
+                          file, ...)
     cat(paste0("Download completed with exit code: ", value))
     unzip(zipfile = file, exdir=downloadPath)
     if(remove){
