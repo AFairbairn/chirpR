@@ -15,6 +15,7 @@
 #' @param length Total number of minutes of recording per day
 #' @return A dataframe of all .csv files in path
 #' @export
+#' @importFrom stats var
 vari <- function(df, overlap=0, site=F, length) {
   # Check if overlap is 0 or not (0 is default)
   if(overlap==0){
