@@ -14,7 +14,7 @@
 #' \dontrun{
 #' getBn()
 #' getBn(path="C:/projectFolder/")}
-#' @importFrom utils download.filerom unzip
+#' @importFrom utils download.file unzip
 getBN <- function(path, remove = TRUE, ...) {
   # Check path input
   if(missing(path)){
