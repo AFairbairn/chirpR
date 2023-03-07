@@ -16,16 +16,18 @@ knitr::opts_chunk$set(
 # bnanalysis: [BirdNet Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
 
 <!-- badges: start -->
-```{r }
+
 badger::badge_lifecycle("experimental", "red")
 badger::badge_repostatus("Active", "green")
 badger::badge_license("GPL v3.0")
-```
+
 <!-- badges: end -->
 
 ## Author
 
 Andrew Fairbairn https://afairbairn.com/
+
+## Description
 
 bnanalysis is to provides a collection of functions for installing, running BirdNet and analyzing BirdNet results. These functions can be used to create a semi-automated analysis pipeline.
 
@@ -55,13 +57,6 @@ getBN()
 results <- analyze(i="D:/acoustic recordings")
 head(results[,c(4:6)])
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
 
 * Features to-do list:
   + Support for operating systems other than Windows.

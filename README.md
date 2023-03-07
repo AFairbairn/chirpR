@@ -5,14 +5,9 @@
 
 <!-- badges: start -->
 
-``` r
-badger::badge_lifecycle("experimental", "red")
-#> [1] "[![](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)"
-badger::badge_repostatus("Active", "green")
-#> [1] "[![green](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)"
-badger::badge_license("GPL v3.0")
-#> [1] "[![License: GPL v3.0](https://img.shields.io/badge/license-GPL v3.0-blue.svg)](https://cran.r-project.org/web/licenses/GPL v3.0)"
-```
+badger::badge_lifecycle(“experimental”, “red”)
+badger::badge_repostatus(“Active”, “green”) badger::badge_license(“GPL
+v3.0”)
 
 <!-- badges: end -->
 
@@ -59,20 +54,6 @@ head(results[,c(4:6)])
 #> 4:          Turdus merula Eurasian Blackbird     0.6281
 #> 5:          Turdus merula Eurasian Blackbird     0.4060
 #> 6:     Turdus migratorius     American Robin     0.1313
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
 ```
 
 - Features to-do list:
