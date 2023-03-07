@@ -5,15 +5,18 @@
 
 <!-- badges: start -->
 
-badger::badge_lifecycle(“experimental”, “red”)
-badger::badge_repostatus(“Active”, “green”) badger::badge_license(“GPL
-v3.0”)
+[![](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![green](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![License: GPL
+v3.0](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://cran.r-project.org/web/licenses/GPL%20v3.0)
 
 <!-- badges: end -->
 
 ## Author
 
 Andrew Fairbairn <https://afairbairn.com/>
+
+## Description
 
 bnanalysis is to provides a collection of functions for installing,
 running BirdNet and analyzing BirdNet results. These functions can be

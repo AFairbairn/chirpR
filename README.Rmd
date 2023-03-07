@@ -16,10 +16,18 @@ knitr::opts_chunk$set(
 # bnanalysis: [BirdNet Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
 
 <!-- badges: start -->
+```{r echo=FALSE, results="hide", message=FALSE}
+library("badger")
+```
 
-badger::badge_lifecycle("experimental", "red")
-badger::badge_repostatus("Active", "green")
-badger::badge_license("GPL v3.0")
+```{r, echo = FALSE, results='asis'}
+cat(
+	badge_lifecycle("experimental", "red"),
+  badge_repostatus("Active", "green"),
+  badge_license("GPL v3.0")
+)
+```
+
 
 <!-- badges: end -->
 
