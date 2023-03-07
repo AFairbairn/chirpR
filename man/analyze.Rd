@@ -28,3 +28,14 @@ files are. This also assumes that you chose the .csv output for BirdNet.
 It cannot work with other output formats! This function utilizes list.files
 to get the file list recursive=T is default.
 }
+\examples{
+\dontrun{
+# Run without saving the result and default output
+analyze(i="D:/acoustic recordings", result=F)
+
+# Run with default /bnResults output location
+results <- analyze(i="D:/acoustic recordings")
+
+# Custom output location
+results <- analyze(i="D:/acoustic recordings", o="D:/results")}
+}

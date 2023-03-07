@@ -1,9 +1,9 @@
-#' analyze calls the BirdNet analayze function and returns the results or nothing
+#' analyze calls the BirdNet analayze function and returns the results as a dataframe
 #'
-#' This takes in a path to the results folder where the BirdNet results .csv
-#' files are. This also assumes that you chose the .csv output for BirdNet.
-#' It cannot work with other output formats! This function utilizes list.files
-#' to get the file list recursive=T is default.
+#' analyze is essentially a wrapper for the BirdNet python script analyze.py. It
+#' all the same parameters. See below:
+#'
+#' If BirdNet was not installed using getBN you must set path.
 #'
 #' @param i Path to input .wav files for BirdNet analysis.
 #' @param o Output file location
@@ -13,6 +13,16 @@
 #' @param path If specifying the location of BirdNet. If installed with this package, leave blank.
 #' @return Nothing or a CSV file with the species detection results
 #' @export
+#' @examples
+#' \dontrun{
+#' # Run without saving the result and default output
+#' analyze(i="D:/acoustic recordings", result=F)
+#'
+#' # Run with default /bnResults output location
+#' results <- analyze(i="D:/acoustic recordings")
+#'
+#' # Custom output location
+#' results <- analyze(i="D:/acoustic recordings", o="D:/results")}
 analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
   # Stop message for missing i
   if(missing(i)){
@@ -29,7 +39,15 @@ analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
 
   # Use default BirdNet path if none provided
   if(missing(path)) {
-    path = file.path(path.expand("~"), "BirdNET-Analyzer/BirdNET-Analyzer-main")
+    path = file.path(path.expand("~"), "BirdNET-Analyzer/BirdNet-Analyzer-main")
+  }
+
+  # Check for proper BirdNet installation
+  if(!file.exists(file.path(path, "analyze.py"))){
+    stop("BirdNet not found. Please check installation or use getBN()")
+  }
+  if(!file.exists(file.path(path, "Pipfile"))){
+    stop("Virtual environment not found. Please check installation or use getBN()")
   }
 
   # Check if rtype is valid

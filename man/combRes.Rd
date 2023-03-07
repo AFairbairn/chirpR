@@ -2,7 +2,7 @@
 % Please edit documentation in R/combRes.R
 \name{combRes}
 \alias{combRes}
-\title{Combines BirdNet results files and adds a column for the .wave file name}
+\title{Combines BirdNet results files}
 \usage{
 combRes(path, rtype = "r", recursive = T)
 }
@@ -14,11 +14,16 @@ combRes(path, rtype = "r", recursive = T)
 \item{recursive}{Defaults to True}
 }
 \value{
-A dataframe of all .csv files in path
+A dataframe of all files in path
 }
 \description{
-This takes in a path to the results folder where the BirdNet results .csv
-files are. This also assumes that you chose the .csv output for BirdNet.
-It cannot work with other output formats! This function utilizes list.files
-to get the file list recursive=T is default.
+BirdNet creates a results file for each audio file it analyzes. This takes in
+a path to the results folder where the BirdNet results files are located and
+combines them in to one dataframe for working with in R or saving for analysis
+in other software. This function utilizes list.files to get the file list
+recursive=T is default.
+}
+\examples{
+\dontrun{
+results <- combRes(path="C:/results folder/", rtype="table")}
 }

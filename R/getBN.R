@@ -3,17 +3,26 @@
 #' getBN downloads the latest version of BirdNet from github and installs
 #' it and the necessary python libraries in the users home directory,
 #' unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
+#' When specifying a home directory, this same directory must be used as path in
+#' analyze().
 #'
 #' @param path Path to save BirdNet, defaults to home directory.
 #' @param remove Logical, removes the downloaded .zip file, default=True
 #' @param ... Other parameters to be passed to download.file()
 #' @export
 #' @examples
+#' \dontrun{
 #' getBn()
-#' getBn(path="C:/projectFolder/")
-getBN <- function(path = path.expand("~"), remove = TRUE, ...) {
-  downloadPath = file.path(path, "BirdNET-Analyzer")
+#' getBn(path="C:/projectFolder/")}
+getBN <- function(path, remove = TRUE, ...) {
+  # Check path input
+  if(missing(path)){
+    downloadPath = file.path(path.expand("~"), "BirdNET-Analyzer")
+  } else {
+    downloadPath = file.path(path, "BirdNET-Analyzer")
+  }
   bnPath = file.path(downloadPath, "BirdNet-Analyzer-main")
+
   # Check for directory, if doesn't exist, create
   if(!dir.exists(downloadPath)){
     cat("Getting BirdNet/n")
@@ -38,10 +47,12 @@ getBN <- function(path = path.expand("~"), remove = TRUE, ...) {
   python3Path = Sys.which("python3")
 
   # Determine which command to use
-  if (nchar(pythonPath) > 0) {
+  if (nchar(Sys.which("python")) > 0) {
     pythonCmd = "python"
-  } else if (nchar(python3Path) > 0) {
+  } else if (nchar(Sys.which("python3")) > 0) {
     pythonCmd = "python3"
+  } else {
+    stop("Python not found. Please ensure python is installed and added to PATH")
   }
 
   if (nchar(pythonCmd) > 0) {

@@ -4,7 +4,7 @@
 \alias{getBN}
 \title{Gets the latest version of BirdNet from github}
 \usage{
-getBN(path = path.expand("~"), remove = TRUE, ...)
+getBN(path, remove = TRUE, ...)
 }
 \arguments{
 \item{path}{Path to save BirdNet, defaults to home directory.}
@@ -17,8 +17,11 @@ getBN(path = path.expand("~"), remove = TRUE, ...)
 getBN downloads the latest version of BirdNet from github and installs
 it and the necessary python libraries in the users home directory,
 unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
+When specifying a home directory, this same directory must be used as path in
+analyze().
 }
 \examples{
+\dontrun{
 getBn()
-getBn(path="C:/projectFolder/")
+getBn(path="C:/projectFolder/")}
 }

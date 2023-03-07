@@ -35,9 +35,17 @@ cat(
 
 Andrew Fairbairn https://afairbairn.com/
 
+[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
+
 ## Description
 
 bnanalysis is to provides a collection of functions for installing, running BirdNet and analyzing BirdNet results. These functions can be used to create a semi-automated analysis pipeline.
+
+* Features to-do list:
+  + Support for operating systems other than Windows.
+  + Function to create output tables for, for example, odd detections in Kaleidoscope or other.
+  + Function for calculating VAR "Vocal Activity Rate"
+  + Visualization functions for the bird community
 
 ## Installation
 
@@ -65,9 +73,3 @@ getBN()
 results <- analyze(i="D:/acoustic recordings")
 head(results[,c(4:6)])
 ```
-
-* Features to-do list:
-  + Support for operating systems other than Windows.
-  + Function to create output tables for, for example, odd detections in Kaleidoscope or other.
-  + Function for calculating species frequency - i.e. "minute calls" VAR "Vocal Activity Rate"
-  + Visualization functions for the bird community - see Sethi Norway paper for e.g.
