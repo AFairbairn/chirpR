@@ -13,3 +13,9 @@ RoxygenNote: 7.2.3
 URL: https://github.com/AFairbairn/chirpR.git
 Imports:
   data.table
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "poetry")
+    )
+  )
