@@ -29,16 +29,16 @@ i, Path to input file or folder. If this is a file, o needs to be a file too.
 o, Path to output file or folder. If this is a file, i needs to be a file too.
 lat, Recording location latitude. Set -1 to ignore.
 lon, Recording location longitude. Set -1 to ignore.
-week, Week of the year when the recording was made. Values in \link{1, 48} (4 weeks per month). Set -1 for year-round species list.
+week, Week of the year when the recording was made. Values in [1, 48] (4 weeks per month). Set -1 for year-round species list.
 slist, Path to species list file or folder. If folder is provided, species list needs to be named "species_list.txt". If lat and lon are provided, this list will be ignored.
-sensitivity, Detection sensitivity; Higher values result in higher sensitivity. Values in \link{0.5, 1.5}. Defaults to 1.0.
-min_conf, Minimum confidence threshold. Values in \link{0.01, 0.99}. Defaults to 0.1.
-overlap, Overlap of prediction segments. Values in \link{0.0, 2.9}. Defaults to 0.0.
-rtype, Specifies output format. Values in \link{'table', 'audacity', 'r', 'csv'}. Defaults to 'table' (Raven selection table).
+sensitivity, Detection sensitivity; Higher values result in higher sensitivity. Values in [0.5, 1.5]. Defaults to 1.0.
+min_conf, Minimum confidence threshold. Values in [0.01, 0.99]. Defaults to 0.1.
+overlap, Overlap of prediction segments. Values in [0.0, 2.9]. Defaults to 0.0.
+rtype, Specifies output format. Values in ['table', 'audacity', 'r', 'csv']. Defaults to 'table' (Raven selection table).
 threads, Number of CPU threads.
 batchsize, Number of samples to process at the same time. Defaults to 1.
-locale, Locale for translated species common names. Values in \link{'af', 'de', 'it', ...} Defaults to 'en'.
-sf_thresh, Minimum species occurrence frequency threshold for location filter. Values in \link{0.01, 0.99}. Defaults to 0.03.
+locale, Locale for translated species common names. Values in ['af', 'de', 'it', ...] Defaults to 'en'.
+sf_thresh, Minimum species occurrence frequency threshold for location filter. Values in [0.01, 0.99]. Defaults to 0.03.
 }
 \details{
 For more details see BirdNet-Analyzer on GitHub: https://github.com/kahst/BirdNET-Analyzer
