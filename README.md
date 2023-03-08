@@ -9,8 +9,8 @@
 [![R build
 status](https://github.com/Afairbairn/chirpR/workflows/R-CMD-check/badge.svg)](https://github.com/Afairbairn/chirpR/actions)
 [![green](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![License: GPL
-v3.0](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://cran.r-project.org/web/licenses/GPL%20v3.0)
+[![License: CC BY-NC-SA
+4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-blue.svg)](https://cran.r-project.org/web/licenses/CC%20BY-NC-SA%204.0)
 <!-- badges: end -->
 
 ## Description

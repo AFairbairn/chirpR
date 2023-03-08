@@ -25,7 +25,7 @@ cat(
 	badge_lifecycle("experimental", "red"),
 	badge_github_actions("Afairbairn/chirpR"),
   badge_repostatus("Active", "green"),
-  badge_license("GPL v3.0")
+  badge_license("CC BY-NC-SA 4.0")
 )
 ```
 <!-- badges: end -->
