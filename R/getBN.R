@@ -63,22 +63,22 @@ getBN <- function(path, remove = TRUE, ...) {
 
     # Check if running on Windows
     if (osInfo["sysname"] == "Windows") {
-      # Installing pipenv
-      cat("Installing pipenv...\n")
-      system("pip install --user pipenv")
+      # Installing poetry
+      cat("Installing poetry...\n")
+      system("pip install --user poetry")
       # Create virtual environment using determined command
       cat("Creating virtual environment and installing dependencies...\n")
       oldWd = getwd()
       setwd(bnPath)
-      system(paste0("pipenv install librosa numpy tensorflow"))
+      system(paste0("poetry add librosa numpy tensorflow"))
     } else if (osInfo["sysname"] == "Linux") {
-      # Installing pipenv
-      system("sudo apt-get install ffmpeg")
-      cat("Installing pipenv...\n")
-      system("sudo apt install pipenv")
-      # Install BirdNet required packages
-      cat("Creating virtual environment and installing dependencies...\n")
-      system("pipenv install librosa tensorflow")
+      # # Installing poetry
+      # system("sudo apt-get install ffmpeg")
+      # cat("Installing poetry...\n")
+      # system("sudo apt install poetry")
+      # # Install BirdNet required packages
+      # cat("Creating virtual environment and installing dependencies...\n")
+      # system("poetry install librosa tensorflow")
     }
   } else {
     stop("Python not found. Please install python and ensure it is located in your system path.\n")

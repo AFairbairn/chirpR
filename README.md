@@ -23,13 +23,6 @@ users to easily install and run BirdNet directly from R. Additionally,
 visualizing BirdNet output. Developed with a semi-automated analysis
 pipeline in mind, `chirpR` streamlines the BirdNet analysis process.
 
--   Features to-do list:
-    -   Support for operating systems other than Windows.
-    -   Function to create output tables for, for example, odd
-        detections in Kaleidoscope or other.
-    -   Function for calculating VAR “Vocal Activity Rate”
-    -   Visualization functions for the bird community
-
 ## About
 
 Developed by 🦜Andrew Fairbairn
@@ -60,12 +53,16 @@ setwd("E:/myProject")
 ## Install BirdNet
 getBN()
 #> BirdNet is already installed. Checking python environment and dependencies.
-#> /nInstalling pipenv...
+#> /nInstalling poetry...
 #> Creating virtual environment and installing dependencies...
+#> Warning in system(paste0("poetry add librosa numpy tensorflow")): 'poetry' not
+#> found
 
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
 results <- analyze(i="E:/acoustic recordings")
+#> Warning in system(paste("poetry run python", "analyze.py", argsStr)): 'poetry'
+#> not found
 head(results[,c(4:6)])
 #>       scientific_name        common_name confidence
 #> 1:             Engine             Engine     0.1579

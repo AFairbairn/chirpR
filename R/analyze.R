@@ -88,7 +88,7 @@ analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
   setwd(path)
 
   # Call BirdNet
-  system(paste("pipenv run python", "analyze.py", argsStr))
+  system(paste("poetry run python", "analyze.py", argsStr))
 
   # Return working directory
   setwd(oldWd)

@@ -34,13 +34,6 @@ cat(
 
 `chirpR` is an R package that simplifies the process of analyzing and interpreting BirdNet data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing users to easily install and run BirdNet directly from R. Additionally, `chirpR` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `chirpR` streamlines the BirdNet analysis process.
 
-* Features to-do list:
-  + Support for operating systems other than Windows.
-  + Function to create output tables for, for example, odd detections in Kaleidoscope or other.
-  + Function for calculating VAR "Vocal Activity Rate"
-  + Visualization functions for the bird community
-  
-
 ## About
 
 Developed by 🦜Andrew Fairbairn
