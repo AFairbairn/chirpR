@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# bnanalysis: [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
+# chirpR: [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
 
 <!-- badges: start -->
 ```{r echo=FALSE, results="hide", message=FALSE}
@@ -23,7 +23,7 @@ library("badger")
 ```{r, echo = FALSE, results='asis'}
 cat(
 	badge_lifecycle("experimental", "red"),
-	badge_github_actions("Afairbairn/bnanalysis"),
+	badge_github_actions("Afairbairn/chirpR"),
   badge_repostatus("Active", "green"),
   badge_license("GPL v3.0")
 )
@@ -32,7 +32,7 @@ cat(
 
 ## Description
 
-`bnanalysis` is an R package that simplifies the process of analyzing and interpreting BirdNet data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing users to easily install and run BirdNet directly from R. Additionally, `bnanalysis` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `bnanalysis` streamlines the BirdNet analysis process.
+`chirpR` is an R package that simplifies the process of analyzing and interpreting BirdNet data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing users to easily install and run BirdNet directly from R. Additionally, `chirpR` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `chirpR` streamlines the BirdNet analysis process.
 
 * Features to-do list:
   + Support for operating systems other than Windows.
@@ -52,11 +52,11 @@ Developed by 🦜Andrew Fairbairn
 
 ## Installation
 
-You can install bnanalysis from [GitHub](https://github.com/) with:
+You can install chirpR from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("AFairbairn/bnanalysis")
+devtools::install_github("AFairbairn/chirpR")
 ```
 
 ## Example
@@ -64,7 +64,7 @@ devtools::install_github("AFairbairn/bnanalysis")
 This is a basic example which shows you how to install and use BirdNet:
 
 ```{r }
-library(bnanalysis)
+library(chirpR)
 
 setwd("D:/myProject")
 
