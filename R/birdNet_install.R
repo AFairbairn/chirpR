@@ -1,6 +1,6 @@
-#' Gets the latest version of BirdNet from github
+#' Gets and installs the latest version of BirdNet from github
 #'
-#' getBN downloads the latest version of BirdNet from github and installs
+#' birdNet.install downloads the latest version of BirdNet from github and installs
 #' it and the necessary python libraries in the users home directory,
 #' unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
 #' When specifying a home directory, this same directory must be used as path in
@@ -12,10 +12,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' getBn()
-#' getBn(path="C:/projectFolder/")}
+#' birdNet.install()
+#' birdNet.install(path="C:/projectFolder/")}
 #' @importFrom utils download.file unzip
-getBN <- function(path, remove = TRUE, ...) {
+birdNet.install <- function(path, remove = TRUE, ...) {
   # Check path input
   if(missing(path)){
     downloadPath = file.path(path.expand("~"), "BirdNET-Analyzer")

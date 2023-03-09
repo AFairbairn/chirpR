@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# chirpR: [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
+# chirpR: tools for automated acoustic analyses in R
 
 <!-- badges: start -->
 
@@ -16,19 +16,22 @@ status](https://github.com/Afairbairn/chirpR/workflows/R-CMD-check/badge.svg)](h
 ## Description
 
 `chirpR` is an R package that simplifies the process of analyzing and
-interpreting BirdNet data. It provides a user-friendly wrapper for
-[BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing
-users to easily install and run BirdNet directly from R. Additionally,
+interpreting bird acoustic monitoring data. It provides a user-friendly
+wrapper for
+[BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) and
+[ecoVAD](https://github.com/NINAnor/ecoVAD), allowing users to easily
+install and run BirdNet and ecoVAD directly from R. Additionally,
 `chirpR` includes a collection of functions for analyzing and
 visualizing BirdNet output. Developed with a semi-automated analysis
-pipeline in mind, `chirpR` streamlines the BirdNet analysis process.
+pipeline in mind, `chirpR` streamlines the analysis process.
 
 ## About
 
 Developed by 🦜Andrew Fairbairn
 
-[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/),
-Technical University of Munich
+Current lab: [Chair for Terrestrial
+Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of
+Munich
 
 [Homepage](https://afairbairn.com/)
 
@@ -51,7 +54,7 @@ library(chirpR)
 setwd("E:/myProject")
 
 ## Install BirdNet
-getBN()
+birdNet.install()
 #> BirdNet is already installed. Checking python environment and dependencies.
 #> /nInstalling poetry...
 #> Creating virtual environment and installing dependencies...
@@ -60,7 +63,7 @@ getBN()
 
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
-results <- analyze(i="E:/acoustic recordings")
+results <- birdNet.analyze(i="E:/acoustic recordings")
 #> Warning in system(paste("poetry run python", "analyze.py", argsStr)): 'poetry'
 #> not found
 head(results[,c(4:6)])

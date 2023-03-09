@@ -1,6 +1,6 @@
-#' analyze calls the BirdNet analayze function and returns the results as a dataframe
+#' Calls the BirdNet analayze function and returns the results as a dataframe
 #'
-#' analyze is essentially a wrapper for the BirdNet python script analyze.py. It
+#' BirdNet.analyze is a wrapper for the BirdNet python script analyze.py. It
 #' all the same parameters. See below:
 #'    i, Path to input file or folder. If this is a file, o needs to be a file too.
 #'    o, Path to output file or folder. If this is a file, i needs to be a file too.
@@ -19,7 +19,7 @@
 #'
 #' For more details see BirdNet-Analyzer on GitHub: https://github.com/kahst/BirdNET-Analyzer
 #'
-#' If BirdNet was not installed using getBN you must set path.
+#' If BirdNet was not installed using BirdNet.install() you must set path.
 #'
 #' @param i Path to input .wav files for BirdNet analysis.
 #' @param o Output file location
@@ -32,14 +32,14 @@
 #' @examples
 #' \dontrun{
 #' # Run without saving the result and default output
-#' analyze(i="D:/acoustic recordings", result=F)
+#' birdNet.analyze(i="D:/acoustic recordings", result=F)
 #'
 #' # Run with default /bnResults output location
-#' results <- analyze(i="D:/acoustic recordings")
+#' results <- birdNet.analyze(i="D:/acoustic recordings")
 #'
 #' # Custom output location
-#' results <- analyze(i="D:/acoustic recordings", o="D:/results")}
-analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
+#' results <- birdNet.analyze(i="D:/acoustic recordings", o="D:/results")}
+birdNet.analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
   # Stop message for missing i
   if(missing(i)){
     stop("The argument i is missing. You must set an input directory!")

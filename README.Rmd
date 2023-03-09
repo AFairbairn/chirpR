@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# chirpR: [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) in R
+# chirpR: tools for automated acoustic analyses in R
 
 <!-- badges: start -->
 ```{r echo=FALSE, results="hide", message=FALSE}
@@ -32,13 +32,13 @@ cat(
 
 ## Description
 
-`chirpR` is an R package that simplifies the process of analyzing and interpreting BirdNet data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer), allowing users to easily install and run BirdNet directly from R. Additionally, `chirpR` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `chirpR` streamlines the BirdNet analysis process.
+`chirpR` is an R package that simplifies the process of analyzing and interpreting bird acoustic monitoring data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) and [ecoVAD](https://github.com/NINAnor/ecoVAD), allowing users to easily install and run BirdNet and ecoVAD directly from R. Additionally, `chirpR` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `chirpR` streamlines the analysis process.
 
 ## About
 
 Developed by 🦜Andrew Fairbairn
 
-[Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
+Current lab: [Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
 
 [Homepage](https://afairbairn.com/)
 
@@ -62,10 +62,10 @@ library(chirpR)
 setwd("E:/myProject")
 
 ## Install BirdNet
-getBN()
+birdNet.install()
 
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
-results <- analyze(i="E:/acoustic recordings")
+results <- birdNet.analyze(i="E:/acoustic recordings")
 head(results[,c(4:6)])
 ```
