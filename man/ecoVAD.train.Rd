@@ -2,28 +2,66 @@
 % Please edit documentation in R/ecoVAD_train.R
 \name{ecoVAD.train}
 \alias{ecoVAD.train}
-\title{Gets the latest version of BirdNet from github}
+\title{Train a custom ecoVAD model}
 \usage{
-ecoVAD.train(synthPath)
+ecoVAD.train(configPath, TRAIN_VAL_PATH, ...)
 }
 \arguments{
-\item{synthPath}{Path for the synthetic dataset}
+\item{configPath}{Path to a custom config.yaml file. If not provided, included config file is used.}
 
-\item{audioPath}{Path to the ecoacoustic training data.}
+\item{TRAIN_VAL_PATH}{Path to the synthetic training data created with ecoVAD.genSynth(). Only needs to be provided if custom config not used.}
 
-\item{speechPath}{Path to the human voices training data}
-
-\item{noisePath}{Path to the noise training date}
+\item{...}{Other parameters to update in config_training.yaml}
 }
 \description{
-getBN downloads the latest version of BirdNet from github and installs
-it and the necessary python libraries in the users home directory,
-unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
-When specifying a home directory, this same directory must be used as path in
-analyze().
+Additional parameters to pass to train_model.py must be in the format as in the config file:
 }
+\section{Path to store the model weights}{
+MODEL_SAVE_PATH: "\{current working directory\}"
+}
+
+\section{Save the checkpoints of early stopping call}{
+CKPT_SAVE_PATH: "\{current working directory\}"
+}
+
+\section{Learning rate}{
+LR: 0.001
+}
+
+\section{Momentum}{
+MOMENTUM: 0.99
+}
+
+\section{Decay}{
+DECAY: 0.01
+}
+
+\section{Batch size to use for training}{
+BATCH_SIZE: 32
+}
+
+\section{Number of epochs to train the model for}{
+NUM_EPOCH: 50
+}
+
+\section{Tensorboard folder}{
+TB_PREFIX: "demo_training"
+}
+
+\section{Comment suffix for Tensorboard run}{
+TB_COMMENT: "no-comments"
+}
+
+\section{Numbers of workers, best to have num_workers = number of CPUs}{
+NUM_WORKERS: 0
+}
+
+\section{Whether to training pipeline should use a GPU}{
+USE_GPU: False
+}
+
 \examples{
 \dontrun{
-getBn()
-getBn(path="C:/projectFolder/")}
+ecoVAD.train()
+ecoVAD.train(path="C:/projectFolder/config.yaml")}
 }

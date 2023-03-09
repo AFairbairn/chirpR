@@ -2,28 +2,57 @@
 % Please edit documentation in R/ecoVAD_genSynth.R
 \name{ecoVAD.genSynth}
 \alias{ecoVAD.genSynth}
-\title{Gets the latest version of BirdNet from github}
+\title{Generates synthetic data for training and testing an ecoVAD model}
 \usage{
-ecoVAD.genSynth(audioPath, speechPath, noisePath, synthPath)
+ecoVAD.genSynth(configPath, AUDIO_OUT_DIR, ...)
 }
 \arguments{
-\item{audioPath}{Path to the ecoacoustic training data.}
+\item{configPath}{Path to a custom config.yaml file. If not provided, included config file is used.}
 
-\item{speechPath}{Path to the human voices training data}
+\item{AUDIO_OUT_DIR}{Path to output synthetic training data. Defaults to current working directory/symthetic_dataset if not provided and no custom config file is used.}
 
-\item{noisePath}{Path to the noise training date}
-
-\item{synthPath}{Path for the synthetic dataset}
+\item{...}{Other parameters to update in config_data.yaml}
 }
 \description{
-getBN downloads the latest version of BirdNet from github and installs
-it and the necessary python libraries in the users home directory,
-unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
-When specifying a home directory, this same directory must be used as path in
-analyze().
+Additional parameters to pass to train_model.py must be in the format as in the config file:
+AUDIO_PATH: "./assets/demo_data/training_model/soundscape_data/" ** Only accepts .wav and .mp3!
 }
+\section{Path to the directory containing human speech files}{
+SPEECH_DIR: "./assets/demo_data/training_model/human_voices/"
+}
+
+\section{Path to the directory containing noise (e.g. environmental noises, animal vocalization)}{
+NOISE_DIR: "./assets/demo_data/training_model/natural_sounds/"
+}
+
+\section{Length of the output audio file (in ms)}{
+LENGTH_SEGMENTS: 3
+}
+
+\section{Probability of including human speech on a given segment}{
+PROBA_SPEECH: 0.5
+}
+
+\section{When speech is added, what is the probability of adding noise to the segment}{
+PROBA_NOISE_WHEN_SPEECH: 0.5
+
+PROBA_NOISE_WHEN_NO_SPEECH: 0.9
+}
+
+\section{Path to the folder storing the segments}{
+AUDIO_OUT_DIR: "./assets/demo_data/training_model/synthetic_dataset"
+}
+
+\section{Whether the dataset should include background noises}{
+INCLUDE_NOISES: True
+}
+
+\section{Whether the dataset should include the soundscape}{
+INCLUDE_SOUNDSCAPE: True
+}
+
 \examples{
 \dontrun{
-getBn()
-getBn(path="C:/projectFolder/")}
+ecoVAD.genSynth()
+ecoVAD.genSynth(path="C:/projectFolder/config.yaml")}
 }
