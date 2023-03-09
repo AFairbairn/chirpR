@@ -55,7 +55,7 @@ birdNet.analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
 
   # Use default BirdNet path if none provided
   if(missing(path)) {
-    path = file.path(path.expand("~"), "BirdNET-Analyzer/BirdNet-Analyzer-main")
+    path = file.path(system.file("birdNet", package = "chirpR"), "BirdNet-Analyzer-main")
   }
 
   # Check for proper BirdNet installation

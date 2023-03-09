@@ -59,13 +59,11 @@ This is a basic example which shows you how to install and use BirdNet:
 ```{r }
 library(chirpR)
 
-setwd("E:/myProject")
-
 ## Install BirdNet
 birdNet.install()
 
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
-results <- birdNet.analyze(i="E:/acoustic recordings")
+results <- birdNet.analyze(i="D:/acoustic recordings")
 head(results[,c(4:6)])
 ```

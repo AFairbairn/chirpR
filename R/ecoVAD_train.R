@@ -39,7 +39,7 @@ ecoVAD.train <- function(configPath, TRAIN_VAL_PATH, ...) {
     if(missing(TRAIN_VAL_PATH)){
       stop("Training value path must be provided")
     }
-    configPath <- file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_training.yaml")
+    configPath = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_training.yaml")
     config = yaml::read_yaml(configPath)
     config$TRAIN_VAL_PATH = TRAIN_VAL_PATH
     training_path = file.path(getwd(), "model_weights")
@@ -63,7 +63,7 @@ ecoVAD.train <- function(configPath, TRAIN_VAL_PATH, ...) {
   }
 
   # Get Python configuration
-  pyConfig = py_config()
+  pyConfig = reticulate::py_config()
     # Check if a virtual environment is active
   venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
   if (pyConfig$virtualenv == venv_path) {
@@ -74,5 +74,5 @@ ecoVAD.train <- function(configPath, TRAIN_VAL_PATH, ...) {
   }
   # Run train
   make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecovad/train_model.py")
-  py_run_file(make_model, args = c("--config", configPath))
+  reticulate::py_run_file(make_model, args = c("--config", configPath))
 }

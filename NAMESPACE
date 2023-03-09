@@ -3,6 +3,7 @@
 export(birdNet.analyze)
 export(birdNet.install)
 export(combRes)
+export(ecoVAD.anonymize)
 export(ecoVAD.genSynth)
 export(ecoVAD.setup)
 export(ecoVAD.train)

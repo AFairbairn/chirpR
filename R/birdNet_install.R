@@ -6,8 +6,7 @@
 #' When specifying a home directory, this same directory must be used as path in
 #' analyze().
 #'
-#' @param path Path to save BirdNet, defaults to home directory.
-#' @param remove Logical, removes the downloaded .zip file, default=True
+#' @param path Path to save BirdNet, defaults to package directory.
 #' @param ... Other parameters to be passed to download.file()
 #' @export
 #' @examples
@@ -15,74 +14,63 @@
 #' birdNet.install()
 #' birdNet.install(path="C:/projectFolder/")}
 #' @importFrom utils download.file unzip
-birdNet.install <- function(path, remove = TRUE, ...) {
+birdNet.install <- function(path, ...) {
   # Check path input
   if(missing(path)){
-    downloadPath = file.path(path.expand("~"), "BirdNET-Analyzer")
+    downloadPath = system.file("birdNet", package = "chirpR")
   } else {
-    downloadPath = file.path(path, "BirdNET-Analyzer")
+    downloadPath = file.path(path)
   }
   bnPath = file.path(downloadPath, "BirdNet-Analyzer-main")
 
-  # Check for directory, if doesn't exist, create
-  if(!dir.exists(downloadPath)){
-    cat("Getting BirdNet/n")
-    dir.create(downloadPath)
+  # Check python
+  py = reticulate::py_config()
+
+  if(!compareVersion(py$version, "3.8") >=0){
+    stop(paste0("BirdNet requires python version 3.8 or greater. You have version ",
+                py.version, ". Please upgrade!"))
+  }
+
+  # Check for existing BirdNet installation
+  if(dir.exists(bnPath)){
+    cat("BirdNet is already installed. Checking python environment and dependencies.\n")
+  } else {
+    cat("Getting BirdNet...\n")
     # Download BirdNet analyzer
     file=file.path(downloadPath, "BirdNET-Analyzer.zip")
     value = download.file("https://github.com/kahst/BirdNET-Analyzer/archive/refs/heads/main.zip",
                           file, ...)
-    cat(paste0("Download completed with exit code: ", value))
+    cat(paste0("Download completed with exit code: ", value, "\n"))
     unzip(zipfile = file, exdir=downloadPath)
-    if(remove){
-      unlink(file)
-    }
-  } else if(dir.exists(bnPath)) {
-      cat("BirdNet is already installed. Checking python environment and dependencies.\n")
-  } else {
-    stop("Oops. Something went wrong! Please check the path and that BirdNet isn't already installed.")
+    unlink(file)
   }
 
-  # Check location of python and python3 executables
-  pythonPath = Sys.which("python")
-  python3Path = Sys.which("python3")
+  # Set the path to the virtual environment
+  venv_path = file.path(system.file("birdNet", package = "chirpR"), "birdNet_venv")
+  # Load dependencies list
+  venv_packagesFile = file.path(system.file("birdNet", package = "chirpR"), "dependencies.txt")
+  venv_packages = readLines(venv_packagesFile)
 
-  # Determine which command to use
-  if (nchar(Sys.which("python")) > 0) {
-    pythonCmd = "python"
-  } else if (nchar(Sys.which("python3")) > 0) {
-    pythonCmd = "python3"
-  } else {
-    stop("Python not found. Please ensure python is installed and added to PATH")
-  }
-
-  if (nchar(pythonCmd) > 0) {
-    # Get operating system information
-    osInfo = Sys.info()
-    cat("/n")
-
-    # Check if running on Windows
-    if (osInfo["sysname"] == "Windows") {
-      # Installing poetry
-      cat("Installing poetry...\n")
-      system("pip install --user poetry")
-      # Create virtual environment using determined command
-      cat("Creating virtual environment and installing dependencies...\n")
-      oldWd = getwd()
-      setwd(bnPath)
-      system(paste0("poetry add librosa numpy tensorflow"))
-    } else if (osInfo["sysname"] == "Linux") {
-      # # Installing poetry
-      # system("sudo apt-get install ffmpeg")
-      # cat("Installing poetry...\n")
-      # system("sudo apt install poetry")
-      # # Install BirdNet required packages
-      # cat("Creating virtual environment and installing dependencies...\n")
-      # system("poetry install librosa tensorflow")
+  # Check if the virtual environment already exists
+  if (dir.exists(venv_path)) {
+    # Virtual environment exists, check if packages are installed
+    reticulate::use_virtualenv(virtualenv = venv_path)
+    # Check which packages are already installed
+    installed <- sapply(venv_packages, reticulate::py_module_available)
+    # Remove installed packages from the list
+    packages_to_install <- venv_packages[!installed]
+    # Install remaining packages
+    if (length(packages_to_install) > 0) {
+      message("The following Python packages will be installed: ", paste(packages_to_install, collapse = ", "))
+      reticulate::py_install(packages_to_install)
     }
   } else {
-    stop("Python not found. Please install python and ensure it is located in your system path.\n")
+    # Create a new virtual environment
+    cat("Creating virtual environment...\n")
+    reticulate::virtualenv_create(envname = venv_path)
+
+    message("The following Python packages will be installed: ", paste(venv_packages, collapse = ", "))
+    reticulate::py_install(venv_packages)
   }
-  setwd(oldWd)
 
 }

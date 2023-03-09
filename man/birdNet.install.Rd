@@ -4,12 +4,10 @@
 \alias{birdNet.install}
 \title{Gets and installs the latest version of BirdNet from github}
 \usage{
-birdNet.install(path, remove = TRUE, ...)
+birdNet.install(path, ...)
 }
 \arguments{
-\item{path}{Path to save BirdNet, defaults to home directory.}
-
-\item{remove}{Logical, removes the downloaded .zip file, default=True}
+\item{path}{Path to save BirdNet, defaults to package directory.}
 
 \item{...}{Other parameters to be passed to download.file()}
 }
