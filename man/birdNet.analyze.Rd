@@ -25,24 +25,25 @@ Nothing or a CSV file with the species detection results
 \description{
 BirdNet.analyze is a wrapper for the BirdNet python script analyze.py. It
 all the same parameters. See below:
-i, Path to input file or folder. If this is a file, o needs to be a file too.
-o, Path to output file or folder. If this is a file, i needs to be a file too.
-lat, Recording location latitude. Set -1 to ignore.
-lon, Recording location longitude. Set -1 to ignore.
-week, Week of the year when the recording was made. Values in [1, 48] (4 weeks per month). Set -1 for year-round species list.
-slist, Path to species list file or folder. If folder is provided, species list needs to be named "species_list.txt". If lat and lon are provided, this list will be ignored.
-sensitivity, Detection sensitivity; Higher values result in higher sensitivity. Values in [0.5, 1.5]. Defaults to 1.0.
-min_conf, Minimum confidence threshold. Values in [0.01, 0.99]. Defaults to 0.1.
-overlap, Overlap of prediction segments. Values in [0.0, 2.9]. Defaults to 0.0.
-rtype, Specifies output format. Values in ['table', 'audacity', 'r', 'csv']. Defaults to 'table' (Raven selection table).
-threads, Number of CPU threads.
-batchsize, Number of samples to process at the same time. Defaults to 1.
-locale, Locale for translated species common names. Values in ['af', 'de', 'it', ...] Defaults to 'en'.
-sf_thresh, Minimum species occurrence frequency threshold for location filter. Values in [0.01, 0.99]. Defaults to 0.03.
+\itemize{
+\item i, Path to input file or folder. If this is a file, o needs to be a file too.
+\item o, Path to output file or folder. If this is a file, i needs to be a file too.
+\item lat, Recording location latitude. Set -1 to ignore.
+\item lon, Recording location longitude. Set -1 to ignore.
+\item week, Week of the year when the recording was made. Values in [1, 48] (4 weeks per month). Set -1 for year-round species list.
+\item slist, Path to species list file or folder. If folder is provided, species list needs to be named "species_list.txt". If lat and lon are provided, this list will be ignored.
+\item sensitivity, Detection sensitivity; Higher values result in higher sensitivity. Values in [0.5, 1.5]. Defaults to 1.0.
+\item min_conf, Minimum confidence threshold. Values in [0.01, 0.99]. Defaults to 0.1.
+\item overlap, Overlap of prediction segments. Values in [0.0, 2.9]. Defaults to 0.0.
+\item rtype, Specifies output format. Values in ['table', 'audacity', 'r', 'csv']. Defaults to 'table' (Raven selection table).
+\item threads, Number of CPU threads.
+\item batchsize, Number of samples to process at the same time. Defaults to 1.
+\item locale, Locale for translated species common names. Values in ['af', 'de', 'it', ...] Defaults to 'en'.
+\item sf_thresh, Minimum species occurrence frequency threshold for location filter. Values in [0.01, 0.99]. Defaults to 0.03.
+}
+For more details see BirdNet-Analyzer on GitHub: https://github.com/kahst/BirdNET-Analyzer
 }
 \details{
-For more details see BirdNet-Analyzer on GitHub: https://github.com/kahst/BirdNET-Analyzer
-
 If BirdNet was not installed using BirdNet.install() you must set path.
 }
 \examples{

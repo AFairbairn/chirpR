@@ -65,9 +65,9 @@ ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ...) {
     cat("Virtual environment is active:", config$virtualenv)
   } else {
     cat("Activating ecoVAD virtual environment...")
-    use_virtualenv(venv_path)
+    reticulate::use_virtualenv(venv_path)
   }
   # Run make data
   make_data = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecovad/make_data.py")
-  py_run_file(make_data, args = c("--config", configPath))
+  reticulate::py_run_file(make_data, args = c("--config", configPath))
 }

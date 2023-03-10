@@ -46,26 +46,24 @@ devtools::install_github("AFairbairn/chirpR")
 
 ## Example
 
-This is a basic example which shows you how to install and use BirdNet:
+Installing and running BirdNet:
 
 ``` r
 library(chirpR)
 
-setwd("E:/myProject")
-
 ## Install BirdNet
 birdNet.install()
-#> BirdNet is already installed. Checking python environment and dependencies.
-#> /nInstalling poetry...
-#> Creating virtual environment and installing dependencies...
-#> Warning in system(paste0("poetry add librosa numpy tensorflow")): 'poetry' not
-#> found
+#> Python Python 3.11.2 is installed.
+#> Python Python 3.10.10 is installed.
+#> Using Python version: Python 3.10.10
+#> Getting BirdNet...
+#> Download completed with exit code: 0
+#> Creating virtual environment...
+#> Done! BirdNET is ready to use.
 
 ## Run BirdNet using default settings
 ## i is the input files path, as in BirdNet-Analyze
-results <- birdNet.analyze(i="E:/acoustic recordings")
-#> Warning in system(paste("poetry run python", "analyze.py", argsStr)): 'poetry'
-#> not found
+results <- birdNet.analyze(i="E:/acoustic recordings", o="E:/bnResults")
 head(results[,c(4:6)])
 #>       scientific_name        common_name confidence
 #> 1:             Engine             Engine     0.1579
@@ -74,4 +72,15 @@ head(results[,c(4:6)])
 #> 4:      Turdus merula Eurasian Blackbird     0.3508
 #> 5:      Turdus merula Eurasian Blackbird     0.5635
 #> 6:  Turdus viscivorus      Mistle Thrush     0.2606
+```
+
+## Example
+
+Setup ecoVAD:
+
+``` r
+library(chirpR)
+
+## Setup ecoVad
+#ecoVAD.setup()
 ```

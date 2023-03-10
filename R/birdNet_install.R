@@ -13,7 +13,7 @@
 #' \dontrun{
 #' birdNet.install()
 #' birdNet.install(path="C:/projectFolder/")}
-#' @importFrom utils download.file unzip
+#' @import utils
 birdNet.install <- function(path, ...) {
   # Check path input
   if(missing(path)){
@@ -24,23 +24,46 @@ birdNet.install <- function(path, ...) {
   bnPath = file.path(downloadPath, "BirdNet-Analyzer-main")
 
   # Check python
-  py = reticulate::py_config()
+  os = Sys.info()[["sysname"]]
+  py_cmd = ifelse(os == "Windows", "python", "python3")
+  which_cmd = ifelse(os == "Windows", "where", "which")
+  py_paths = system(paste(which_cmd, py_cmd), intern = TRUE)
 
-  if(!compareVersion(py$version, "3.8") >=0){
-    stop(paste0("BirdNet requires python version 3.8 or greater. You have version ",
-                py.version, ". Please upgrade!"))
+  for (path in py_paths) {
+    py_version_cmd = paste0(path, " --version")
+    tryCatch({
+      py_version = system(py_version_cmd, intern = TRUE)
+      message(paste0('Python ', py_version, ' is installed.'))
+      found <<- TRUE
+    }, error = function(e) {
+      message(paste0('Warning: There was a problem checking for Python ', version, '.'))
+    })
+    if (grepl("Python ([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
+      py_path = path
+      py_version = py_version
+      break
+    }
   }
+
+  if (length(py_version) == 0) {
+    stop("No compatible version of Python found. Please install Python 3.7 to 3.10.")
+  }
+
+  message("Using Python version: ", py_version)
+
+
+  py_cmd <- tolower(py_version)
 
   # Check for existing BirdNet installation
   if(dir.exists(bnPath)){
-    cat("BirdNet is already installed. Checking python environment and dependencies.\n")
+    message("BirdNet is already installed. Checking python environment and dependencies.")
   } else {
-    cat("Getting BirdNet...\n")
+    message("Getting BirdNet...")
     # Download BirdNet analyzer
-    file=file.path(downloadPath, "BirdNET-Analyzer.zip")
+    file = file.path(downloadPath, "BirdNET-Analyzer.zip")
     value = download.file("https://github.com/kahst/BirdNET-Analyzer/archive/refs/heads/main.zip",
                           file, ...)
-    cat(paste0("Download completed with exit code: ", value, "\n"))
+    message(paste0("Download completed with exit code: ", value))
     unzip(zipfile = file, exdir=downloadPath)
     unlink(file)
   }
@@ -53,24 +76,24 @@ birdNet.install <- function(path, ...) {
 
   # Check if the virtual environment already exists
   if (dir.exists(venv_path)) {
+    message("Checking virtual environment...")
     # Virtual environment exists, check if packages are installed
-    reticulate::use_virtualenv(virtualenv = venv_path)
-    # Check which packages are already installed
-    installed <- sapply(venv_packages, reticulate::py_module_available)
-    # Remove installed packages from the list
-    packages_to_install <- venv_packages[!installed]
-    # Install remaining packages
-    if (length(packages_to_install) > 0) {
-      message("The following Python packages will be installed: ", paste(packages_to_install, collapse = ", "))
-      reticulate::py_install(packages_to_install)
-    }
+    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
+    system2(pip_path, args = c("install", venv_packages))
   } else {
     # Create a new virtual environment
-    cat("Creating virtual environment...\n")
-    reticulate::virtualenv_create(envname = venv_path)
-
-    message("The following Python packages will be installed: ", paste(venv_packages, collapse = ", "))
-    reticulate::py_install(venv_packages)
+    message("Creating virtual environment...")
+    system2(py_path, args = c("-m", "venv", venv_path))
+    #system(paste0(py_path, " -m venv ", venv_path))
+    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
+    system2(pip_path, args = c("install", venv_packages))
+    #system2(py_path, args = c("-m", "pip", "install", venv_packages), env = c("VIRTUAL_ENV" = venv_path))
   }
 
+  message("Done! BirdNET is ready to use.")
 }
+
+
+
+
+

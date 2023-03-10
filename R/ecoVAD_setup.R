@@ -23,40 +23,41 @@ ecoVAD.setup <- function() {
 
   # Check if the virtual environment already exists
   if (dir.exists(venv_path)) {
-    # Virtual environment exists, check if packages are installed
-    reticulate::use_virtualenv(virtualenv = venv_path)
-    # Check which packages are already installed
-    installed <- sapply(venv_packages, reticulate::py_module_available)
-    # Remove installed packages from the list
-    packages_to_install <- venv_packages[!installed]
-    # Install remaining packages
-    if (length(packages_to_install) > 0) {
-      # Ask the user for confirmation
-      message("The following Python packages will be installed: ", paste(packages_to_install, collapse = ", "))
-      response <- readline(prompt = "Do you want to install them now? [y/n] ")
-
-      if (tolower(response) == "y") {
-        # Install remaining packages
-        reticulate::py_install(packages_to_install)
-      } else {
-        stop("These packages are required to use ecoVAD.")
+    tryCatch({
+      # Virtual environment exists, check if packages are installed
+      reticulate::use_virtualenv(virtualenv = venv_path)
+      # Check which packages are already installed
+      installed <- sapply(venv_packages, reticulate::py_module_available)
+      # Remove installed packages from the list
+      packages_to_install <- venv_packages[!installed]
+      # Install remaining packages
+      if (length(packages_to_install) > 0) {
+        # Ask the user for confirmation
+        message("The following Python packages will be installed: ", paste(packages_to_install, collapse = ", "))
+        reticulate::virtualenv_install(packages_to_install)
       }
-    }
+    }, error = function(e) {
+      # Handle error when activating virtual environment or installing packages
+      mesage(paste0("Error: ", e))
+      message("An error occurred while activating the virtual environment or installing packages.")
+      stop("Please make sure that Python is installed and available in your PATH.")
+    })
   } else {
-    # Create a new virtual environment
-    cat("Creating virtual environment...\n")
-    reticulate::virtualenv_create(envname = venv_path)
-
-    message("The following Python packages will be installed: ", paste(venv_packages, collapse = ", "))
-    response <- readline(prompt = "Do you want to install them now? [y/n] ")
-    if (tolower(response) == "y") {
-      # Install packages
-      reticulate::py_install(venv_packages)
-    } else {
-      stop("These packages are required to use ecoVAD.\n")
-    }
+    tryCatch({
+      # Create a new virtual environment
+      message("Creating virtual environment...\n")
+      reticulate::virtualenv_create(envname = venv_path)
+      reticulate::use_virtualenv(venv_path)
+      message("The following Python packages will be installed: ", paste(venv_packages, collapse = ", "))
+      reticulate::virtualenv_install(venv_packages, envname=venv_path)
+    }, error = function(e) {
+      # Handle error when creating virtual environment or installing packages
+      mesage(paste0("Error: ", e))
+      message("An error occurred while creating the virtual environment or installing packages.")
+      stop("Please make sure that Python is installed and available in your PATH.")
+    })
   }
 
-  cat("ecoVAD setup sucessful! You may now use ecoVAD functions.")
+  message("ecoVAD setup sucessful! You may now use ecoVAD functions.")
 
 }

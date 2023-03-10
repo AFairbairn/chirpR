@@ -4,62 +4,62 @@
 \alias{ecoVAD.train}
 \title{Train a custom ecoVAD model}
 \usage{
-ecoVAD.train(configPath, TRAIN_VAL_PATH, ...)
+ecoVAD.train(
+  configPath,
+  AUDIO_PATH,
+  SPEECH_DIR,
+  NOISE_DIR,
+  AUDIO_OUT_DIR,
+  ...,
+  train = TRUE,
+  trainOnly = FALSE
+)
 }
 \arguments{
-\item{configPath}{Path to a custom config.yaml file. If not provided, included config file is used.}
+\item{configPath}{Path to a custom config.yaml file. If provided, all other ecoVAD parameters are ignored and it is assumed that the folders exist! If not provided, included config file is used.}
 
-\item{TRAIN_VAL_PATH}{Path to the synthetic training data created with ecoVAD.genSynth(). Only needs to be provided if custom config not used.}
+\item{AUDIO_PATH}{Path to directory with the audio files. Ignored if trainOnly.}
+
+\item{SPEECH_DIR}{Path to directory with the speech files. Ignored if trainOnly.}
+
+\item{NOISE_DIR}{Path to directory with the noise files. Ignored if trainOnly.}
+
+\item{AUDIO_OUT_DIR}{Path to save the synthetic training data. Only needs to be provided if custom config not used.}
 
 \item{...}{Other parameters to update in config_training.yaml}
+
+\item{train}{Logical, to just create synthetic data set to false. Defaults to true.}
+
+\item{trainOnly}{Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.}
 }
 \description{
+Create synthetic data nd train an ecoVAD model. If custom config file is provided,
 Additional parameters to pass to train_model.py must be in the format as in the config file:
+\itemize {
+\item AUDIO_PATH: "./path/to/soundscape_data/" Path to the audio files to be processed (e.g. the ones that come from the field experiment)
+\item SPEECH_DIR: "./path/to/human_voices/" Path to the directory containing human speech files
+\item NOISE_DIR: "./path/to/natural_sounds/" Path to the directory containing noise (e.g. environmental noises, animal vocalization)
+\item LENGTH_SEGMENTS: 3 Length of the output audio file (in ms)
+\item PROBA_SPEECH: 0.5 Probability of including human speech on a given segment
+\item PROBA_NOISE_WHEN_SPEECH: 0.5 When speech is added, what is the probability of adding noise to the segment
+\item PROBA_NOISE_WHEN_NO_SPEECH: 0.9 When speech is added, what is the probability of adding noise to the segment
+\item AUDIO_OUT_DIR: "\{current working directory/synthetic_data\}" Path to the folder storing the segments
+\item INCLUDE_NOISES: True Whether the dataset should include background noises
+\item INCLUDE_SOUNDSCAPE: True Whether the dataset should include the soundscape
+\item TRAIN_VAL_PATH: "\{AUDIO_OUT_DIR\}" Path to the dataset containing the training and validation data
+\item MODEL_SAVE_PATH: "\{current working directory\}" Path to store the model weights
+\item CKPT_SAVE_PATH: "\{current working directory\}" Save the checkpoints of early stopping call
+\item LR: 0.001 Learning rate
+\item MOMENTUM: 0.99 Momentum
+\item DECAY: 0.01 Decay
+\item BATCH_SIZE: 32 Batch size to use for training
+\item NUM_EPOCH: 50 Number of epochs to train the model for
+\item TB_PREFIX: "demo_training" Tensorboard folder
+\item TB_COMMENT: "no-comments" Comment suffix for Tensorboard run
+\item NUM_WORKERS: 0 Numbers of workers, best to have num_workers = number of CPUs
+\item USE_GPU: False Whether to training pipeline should use a GPU
 }
-\section{Path to store the model weights}{
-MODEL_SAVE_PATH: "\{current working directory\}"
 }
-
-\section{Save the checkpoints of early stopping call}{
-CKPT_SAVE_PATH: "\{current working directory\}"
-}
-
-\section{Learning rate}{
-LR: 0.001
-}
-
-\section{Momentum}{
-MOMENTUM: 0.99
-}
-
-\section{Decay}{
-DECAY: 0.01
-}
-
-\section{Batch size to use for training}{
-BATCH_SIZE: 32
-}
-
-\section{Number of epochs to train the model for}{
-NUM_EPOCH: 50
-}
-
-\section{Tensorboard folder}{
-TB_PREFIX: "demo_training"
-}
-
-\section{Comment suffix for Tensorboard run}{
-TB_COMMENT: "no-comments"
-}
-
-\section{Numbers of workers, best to have num_workers = number of CPUs}{
-NUM_WORKERS: 0
-}
-
-\section{Whether to training pipeline should use a GPU}{
-USE_GPU: False
-}
-
 \examples{
 \dontrun{
 ecoVAD.train()

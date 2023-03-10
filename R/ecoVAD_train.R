@@ -1,65 +1,89 @@
 #' Train a custom ecoVAD model
 #'
-#'
+#' Create synthetic data nd train an ecoVAD model. If custom config file is provided,
 #' Additional parameters to pass to train_model.py must be in the format as in the config file:
-#' # Path to store the model weights
-#' MODEL_SAVE_PATH: "\{current working directory\}"
-#' # Save the checkpoints of early stopping call
-#' CKPT_SAVE_PATH: "\{current working directory\}"
-#' # Learning rate
-#' LR: 0.001
-#' # Momentum
-#' MOMENTUM: 0.99
-#' # Decay
-#' DECAY: 0.01
-#' # Batch size to use for training
-#' BATCH_SIZE: 32
-#' # Number of epochs to train the model for
-#' NUM_EPOCH: 50
-#' # Tensorboard folder
-#' TB_PREFIX: "demo_training"
-#' # Comment suffix for Tensorboard run
-#' TB_COMMENT: "no-comments"
-#' # Numbers of workers, best to have num_workers = number of CPUs
-#' NUM_WORKERS: 0
-#' # Whether to training pipeline should use a GPU
-#' USE_GPU: False
-#'
-#' @param configPath Path to a custom config.yaml file. If not provided, included config file is used.
-#' @param TRAIN_VAL_PATH Path to the synthetic training data created with ecoVAD.genSynth(). Only needs to be provided if custom config not used.
+#' \itemize {
+#'  \item AUDIO_PATH: "./path/to/soundscape_data/" Path to the audio files to be processed (e.g. the ones that come from the field experiment)
+#'  \item SPEECH_DIR: "./path/to/human_voices/" Path to the directory containing human speech files
+#'  \item NOISE_DIR: "./path/to/natural_sounds/" Path to the directory containing noise (e.g. environmental noises, animal vocalization)
+#'  \item LENGTH_SEGMENTS: 3 Length of the output audio file (in ms)
+#'  \item PROBA_SPEECH: 0.5 Probability of including human speech on a given segment
+#'  \item PROBA_NOISE_WHEN_SPEECH: 0.5 When speech is added, what is the probability of adding noise to the segment
+#'  \item PROBA_NOISE_WHEN_NO_SPEECH: 0.9 When speech is added, what is the probability of adding noise to the segment
+#'  \item AUDIO_OUT_DIR: "\{current working directory/synthetic_data\}" Path to the folder storing the segments
+#'  \item INCLUDE_NOISES: True Whether the dataset should include background noises
+#'  \item INCLUDE_SOUNDSCAPE: True Whether the dataset should include the soundscape
+#'  \item TRAIN_VAL_PATH: "\{AUDIO_OUT_DIR\}" Path to the dataset containing the training and validation data
+#'  \item MODEL_SAVE_PATH: "\{current working directory\}" Path to store the model weights
+#'  \item CKPT_SAVE_PATH: "\{current working directory\}" Save the checkpoints of early stopping call
+#'  \item LR: 0.001 Learning rate
+#'  \item MOMENTUM: 0.99 Momentum
+#'  \item DECAY: 0.01 Decay
+#'  \item BATCH_SIZE: 32 Batch size to use for training
+#'  \item NUM_EPOCH: 50 Number of epochs to train the model for
+#'  \item TB_PREFIX: "demo_training" Tensorboard folder
+#'  \item TB_COMMENT: "no-comments" Comment suffix for Tensorboard run
+#'  \item NUM_WORKERS: 0 Numbers of workers, best to have num_workers = number of CPUs
+#'  \item USE_GPU: False Whether to training pipeline should use a GPU
+#'}
+#' @param configPath Path to a custom config.yaml file. If provided, all other ecoVAD parameters are ignored and it is assumed that the folders exist! If not provided, included config file is used.
+#' @param AUDIO_PATH Path to directory with the audio files. Ignored if trainOnly.
+#' @param SPEECH_DIR Path to directory with the speech files. Ignored if trainOnly.
+#' @param NOISE_DIR Path to directory with the noise files. Ignored if trainOnly.
+#' @param AUDIO_OUT_DIR Path to save the synthetic training data. Only needs to be provided if custom config not used.
 #' @param ... Other parameters to update in config_training.yaml
+#' @param train Logical, to just create synthetic data set to false. Defaults to true.
+#' @param trainOnly Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.
 #' @export
 #' @examples
 #' \dontrun{
 #' ecoVAD.train()
 #' ecoVAD.train(path="C:/projectFolder/config.yaml")}
 #' @import yaml reticulate
-ecoVAD.train <- function(configPath, TRAIN_VAL_PATH, ...) {
+ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OUT_DIR, ..., train=TRUE, trainOnly=FALSE) {
   if(missing(configPath)){
-    if(missing(TRAIN_VAL_PATH)){
-      stop("Training value path must be provided")
-    }
     configPath = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_training.yaml")
-    config = yaml::read_yaml(configPath)
-    config$TRAIN_VAL_PATH = TRAIN_VAL_PATH
-    training_path = file.path(getwd(), "model_weights")
-    if (!dir.exists(training_path)){
-      dir.create(training_path)
+    if(!trainOnly){
+      if(missing(AUDIO_PATH)){
+        stop("AUDIO_PATH required!")
+      }
+      if(missing(SPEECH_DIR)){
+        stop("SPEECH_DIR required!")
+      }
+      if(missing(NOISE_DIR)){
+        stop("NOISE_DIR required!")
+      }
+      if(missing(AUDIO_OUT_DIR)){
+        AUDIO_OUT_DIR = "./synthetic_data"
+      }
     }
-    config$MODEL_SAVE_PATH = file.path(training_path, "ecoVAD_weights.pt")
-    config$CKPT_SAVE_PATH = file.path(training_path, "ecoVAD_ckpts.pt")
-    yaml::write_yaml(config, configPath)
-  }
-  if(!missing(...)){
     config = yaml::read_yaml(configPath)
-    # Get user-provided parameters
-    params <- list(...)
+    config$AUDIO_PATH = AUDIO_PATH
+    config$SPEECH_DIR = SPEECH_DIR
+    config$NOISE_DIR = NOISE_DIR
+    config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
+    config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
 
-    # Update values based on user input
-    for (name in names(params)) {
-      config[[name]] = params[[name]]
+    if(!missing(...)){
+      # Get user-provided parameters
+      params = list(...)
+      # Update values based on user input
+      for (name in names(params)) {
+        config[[name]] = params[[name]]
+      }
+
     }
     yaml::write_yaml(config, configPath)
+
+    # Create output file pats if they don't exist
+    MODEL_SAVE_PATH = dirname(config$MODEL_SAVE_PATH)
+    CKPT_SAVE_PATH = dirname(config$CKPT_SAVE_PATH)
+    if(!dir.exists(MODEL_SAVE_PATH)){
+      dir.create(MODEL_SAVE_PATH)
+    }
+    if(!dir.exists(CKPT_SAVE_PATH)){
+      dir.create(CKPT_SAVE_PATH)
+    }
   }
 
   # Get Python configuration
@@ -72,7 +96,18 @@ ecoVAD.train <- function(configPath, TRAIN_VAL_PATH, ...) {
     cat("Activating ecoVAD virtual environment...")
     use_virtualenv(venv_path)
   }
-  # Run train
-  make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecovad/train_model.py")
-  reticulate::py_run_file(make_model, args = c("--config", configPath))
+  if(trainOnly){
+    make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "train_model.py")
+    reticulate::py_run_file(make_model, args = c("--config", configPath))
+  } else if(!train){
+    # Run make data
+    make_data = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "make_data.py")
+    reticulate::py_run_file(make_data, args = c("--config", configPath))
+  } else {
+    # Run train
+    make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "train_ecovad.py")
+    reticulate::py_run_file(make_model, args = c("--config", configPath))
+  }
+
+
 }
