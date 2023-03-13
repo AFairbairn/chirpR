@@ -2,7 +2,7 @@
 #'
 #' Create synthetic data nd train an ecoVAD model. If custom config file is provided,
 #' Additional parameters to pass to train_model.py must be in the format as in the config file:
-#' \itemize {
+#' \itemize{
 #'  \item AUDIO_PATH: "./path/to/soundscape_data/" Path to the audio files to be processed (e.g. the ones that come from the field experiment)
 #'  \item SPEECH_DIR: "./path/to/human_voices/" Path to the directory containing human speech files
 #'  \item NOISE_DIR: "./path/to/natural_sounds/" Path to the directory containing noise (e.g. environmental noises, animal vocalization)
