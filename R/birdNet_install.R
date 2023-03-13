@@ -71,7 +71,7 @@ birdNet.install <- function(path, ...) {
   # Set the path to the virtual environment
   venv_path = file.path(system.file("birdNet", package = "chirpR"), "birdNet_venv")
   # Load dependencies list
-  venv_packagesFile = file.path(system.file("birdNet", package = "chirpR"), "dependencies.txt")
+  venv_packagesFile = file.path(system.file("birdNet", package = "chirpR"), "requirements.txt")
   venv_packages = readLines(venv_packagesFile)
 
   # Check if the virtual environment already exists

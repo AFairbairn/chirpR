@@ -39,7 +39,7 @@
 #' \dontrun{
 #' ecoVAD.train()
 #' ecoVAD.train(path="C:/projectFolder/config.yaml")}
-#' @import yaml reticulate
+#' @import yaml
 ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OUT_DIR, ..., train=TRUE, trainOnly=FALSE) {
   if(missing(configPath)){
     configPath = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_training.yaml")
@@ -86,27 +86,31 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     }
   }
 
-  # Get Python configuration
-  pyConfig = reticulate::py_config()
-    # Check if a virtual environment is active
+  # Check if a virtual environment is active
   venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
-  if (pyConfig$virtualenv == venv_path) {
-    cat("Virtual environment is active:", config$virtualenv)
-  } else {
-    cat("Activating ecoVAD virtual environment...")
-    use_virtualenv(venv_path)
+  if(!file.exists(file.path(venv_path, "pyvenv.cfg"))){
+    stop("Virtual environment not found. Please check installation or use ecoVAD.setup()")
   }
+
+  if (.Platform$OS.type == "windows") {
+    # Windows
+    py_path = file.path(venv_path, "Scripts", "python")
+  } else {
+    # macOS/Linux
+    py_path = file.path(venv_path, "bin", "python")
+  }
+
   if(trainOnly){
     make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "train_model.py")
-    reticulate::py_run_file(make_model, args = c("--config", configPath))
+    system2(py_path, args = c(make_model, "--config", configPath))
   } else if(!train){
     # Run make data
     make_data = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "make_data.py")
-    reticulate::py_run_file(make_data, args = c("--config", configPath))
+    system2(py_path, args = c(make_data, "--config", configPath))
   } else {
     # Run train
     make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "train_ecovad.py")
-    reticulate::py_run_file(make_model, args = c("--config", configPath))
+    system2(py_path, args = c(make_model, "--config", configPath))
   }
 
 

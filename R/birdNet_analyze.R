@@ -40,7 +40,6 @@
 #'
 #' # Custom output location
 #' results <- birdNet.analyze(i="D:/acoustic recordings", o="D:/results")}
-#' @import reticulate
 birdNet.analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
   # Stop message for missing i
   if(missing(i)){

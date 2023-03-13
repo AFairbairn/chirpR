@@ -64,3 +64,6 @@ rsconnect/
 # Any testing related files
 bnResults/
 rnet/
+
+# Test file
+test.R

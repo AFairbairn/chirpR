@@ -2,12 +2,12 @@
 
 export(birdNet.analyze)
 export(birdNet.install)
+export(birdNet.segment)
 export(combRes)
 export(ecoVAD.anonymize)
 export(ecoVAD.setup)
 export(ecoVAD.train)
 export(vari)
-import(reticulate)
 import(utils)
 import(yaml)
 importFrom(stats,var)
