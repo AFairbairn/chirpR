@@ -53,13 +53,13 @@ devtools::install_github("AFairbairn/chirpR")
 ```
 
 `chirpR` requires Python 3.8 <= 3.10
-To install a supported version of Python, head over to https://www.python.org/, hover over downloads, select your operating system and then scroll down to the installer for a supported version of python. Download and follow the installation instructions. Be sure at add Python to your systems PATH. This is usually an option during installation, but if not do a search for adding Python to PATH of your particularl operating system.
+To install a supported version of Python, head over to https://www.python.org/, hover over downloads, select your operating system and then scroll down to the installer for a supported version of python. Download and follow the installation instructions. Be sure at add Python to your systems PATH. This is usually an option during installation, but if not do a search for adding Python to PATH of your particular operating system.
 
 ## Example
 
 Installing and running BirdNet:
 
-```{r }
+```{r, cache = TRUE}
 library(chirpR)
 
 ## Install BirdNet
