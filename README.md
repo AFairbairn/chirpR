@@ -109,6 +109,6 @@ resources. Just contact me!
 -   English
     -   [LibriSpeech ASR corpus](https://www.openslr.org/12/)
 -   German
-    +[LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
-    +[LibriVox MP3
-    bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
+    -   [LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
+    -   [LibriVox MP3
+        bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
