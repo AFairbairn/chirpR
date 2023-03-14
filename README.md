@@ -15,6 +15,10 @@ status](https://github.com/Afairbairn/chirpR/workflows/R-CMD-check/badge.svg)](h
 
 ## Description
 
+`chirpR` is a work in progress. Originally being built for internal use
+only, I decided that maybe there are others that would benifit from this
+tool.
+
 `chirpR` is an R package that simplifies the process of analyzing and
 interpreting bird acoustic monitoring data. It provides a user-friendly
 wrapper for
@@ -52,7 +56,7 @@ instructions. Be sure at add Python to your systems PATH. This is
 usually an option during installation, but if not do a search for adding
 Python to PATH of your particular operating system.
 
-## Example
+## BirdNet Example
 
 Installing and running BirdNet:
 
@@ -82,7 +86,7 @@ head(results[,c(4:6)])
 #> 6:  Turdus viscivorus      Mistle Thrush     0.2606
 ```
 
-## Example
+## ecoVAD Example
 
 Setup ecoVAD:
 

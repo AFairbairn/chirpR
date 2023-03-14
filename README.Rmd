@@ -32,6 +32,8 @@ cat(
 
 ## Description
 
+`chirpR` is a work in progress. Originally being built for internal use only, I decided that maybe there are others that would benifit from this tool.
+
 `chirpR` is an R package that simplifies the process of analyzing and interpreting bird acoustic monitoring data. It provides a user-friendly wrapper for [BirdNet-Analyzer](https://github.com/kahst/BirdNET-Analyzer) and [ecoVAD](https://github.com/NINAnor/ecoVAD), allowing users to easily install and run BirdNet and ecoVAD directly from R. Additionally, `chirpR` includes a collection of functions for analyzing and visualizing BirdNet output. Developed with a semi-automated analysis pipeline in mind, `chirpR` streamlines the analysis process.
 
 ## About
@@ -55,7 +57,7 @@ devtools::install_github("AFairbairn/chirpR")
 `chirpR` requires Python 3.8 <= 3.10
 To install a supported version of Python, head over to https://www.python.org/, hover over downloads, select your operating system and then scroll down to the installer for a supported version of python. Download and follow the installation instructions. Be sure at add Python to your systems PATH. This is usually an option during installation, but if not do a search for adding Python to PATH of your particular operating system.
 
-## Example
+## BirdNet Example
 
 Installing and running BirdNet:
 
@@ -72,7 +74,7 @@ head(results[,c(4:6)])
 ```
 
 
-## Example
+## ecoVAD Example
 
 Setup ecoVAD:
 
