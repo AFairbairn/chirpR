@@ -21,7 +21,7 @@ combRes <- function(path, rtype="r", recursive=T) {
     # Get list of files
     files = list.files(path = path, pattern = "\\.txt$", full.names = TRUE,
                        recursive = recursive)
-  } else if(rtype %in% c("r", "csv")) {
+  } else if(rtype %in% c("r", "kaleidoscope", "csv")) {
     sep = ","
     # Get list of files
     files = list.files(path = path, pattern = "\\.csv$", full.names = TRUE,

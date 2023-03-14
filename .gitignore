@@ -67,3 +67,6 @@ rnet/
 
 # Test file
 test.R
+
+# Rproject file
+*.Rproj
