@@ -85,3 +85,14 @@ library(chirpR)
 #ecoVAD.setup()
 
 ```
+
+### Training ecoVAD models
+
+The developers of [ecoVAD](https://github.com/NINAnor/ecoVAD) recommend training using the OpenSLR LibriSpeech English language library. As a service for our users, I thought that I would provide a list to several speech libraries for different languages below. This is not an exhaustive list and I would appreciate submission of additional resources. Just contact me!
+
+* English
+    + [LibriSpeech ASR corpus](https://www.openslr.org/12/)
+* German
+    +[LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
+    +[LibriVox MP3 bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
+    
