@@ -15,7 +15,7 @@ get_python_info <- function() {
     tryCatch({
       py_version <- system(py_version_cmd, intern = TRUE)
       message(paste0(py_version, ' is installed.'))
-      found <<- TRUE
+      found = TRUE
     }, error = function(e) {
       message(paste0('Warning: There was a problem checking for Python ', version, '.'))
     })
