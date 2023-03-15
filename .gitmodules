@@ -1,0 +1,3 @@
+[submodule "inst/ecoVAD_chirpR"]
+    path = inst/ecoVAD_chirpR
+    url = https://github.com/AFairbairn/ecoVAD_chirpR
