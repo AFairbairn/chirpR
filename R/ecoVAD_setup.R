@@ -8,6 +8,10 @@
 #' \dontrun{
 #' ecoVAD.setup()}
 ecoVAD.setup <- function() {
+  # Check for libsndfile
+  if (!.Platform$OS.type == "windows") {
+    message("The libsndfile library is required for ecoVAD please ensure it is installed.")
+  }
   # Check python
   python_info = chirpR:::get_python_info()
 
