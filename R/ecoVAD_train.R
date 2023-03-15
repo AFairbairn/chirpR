@@ -96,6 +96,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     # Windows
     py_path = file.path(venv_path, "Scripts", "python")
   } else {
+    if (system2("sndfile-info", stdout = FALSE, stderr = FALSE) != 0) {
+      stop("The sndfile-info command is not available. Please install the libsndfile library.")
+    }
     # macOS/Linux
     py_path = file.path(venv_path, "bin", "python")
   }
