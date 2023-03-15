@@ -22,12 +22,16 @@ ecoVAD.setup <- function() {
   if (dir.exists(venv_path)) {
     message("Checking virtual environment...")
     # Virtual environment exists, check if packages are installed
-    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
-    py_venv_path <- file.path(venv_path, "Scripts", "python.exe")
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip.exe")
+    py_venv_path <- file.path(venv_path, python_info$venv_activate_cmd, "python.exe")
   } else {
     # Create a new virtual environment
     message("Creating virtual environment...")
-    system2(python_info$py_path, args = c("-m", "venv", venv_path))
+    tryCatch({
+      system2(python_info$py_path, args = c("-m", "venv", venv_path))
+    }, error = function(e) {
+      stop(paste0("An error occurred: ", e))
+    })
     pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip.exe")
   }
   tryCatch({
