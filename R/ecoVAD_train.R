@@ -61,6 +61,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     config$AUDIO_PATH = AUDIO_PATH
     config$SPEECH_DIR = SPEECH_DIR
     config$NOISE_DIR = NOISE_DIR
+    if(!dir.exists(AUDIO_OUT_DIR)){
+      dir.create(AUDIO_OUT_DIR)
+    }
     config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
     config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
 
@@ -103,18 +106,20 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
   if(trainOnly){
     message("Training ecoVAD model...")
     make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "train_model.py")
-    system2(py_path, args = c(make_model, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   } else if(!train){
     # Run make data
     message("Creating synthetic data...")
     make_data = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "make_data.py")
-    system2(py_path, args = c(make_data, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_data, "--config", configPath))
   } else {
     # Run train
     message("Creating synthetic data and training model...")
     make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "train_ecovad.py")
-    system2(py_path, args = c(make_model, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   }
-
+  if (exit_status != 0) {
+    stop(paste0("Exit status: ", exit_status, " An error occurred while creating the synthetic data or training the model."))
+  }
 
 }
