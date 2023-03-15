@@ -10,7 +10,6 @@
 ecoVAD.setup <- function() {
   # Check python
   python_info = chirpR:::get_python_info()
-  print(python_info)
 
   # Set the path to the virtual environment
   venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
@@ -23,7 +22,7 @@ ecoVAD.setup <- function() {
   if (dir.exists(venv_path)) {
     message("Checking virtual environment...")
     # Virtual environment exists, check if packages are installed
-    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip.exe")
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip")
     py_venv_path <- file.path(venv_path, python_info$venv_activate_cmd, "python.exe")
   } else {
     # Create a new virtual environment
@@ -32,7 +31,7 @@ ecoVAD.setup <- function() {
     if (exit_status != 0) {
       stop("An error occurred while creating virtual environment.")
     }
-    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip.exe")
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip")
   }
 
   exit_status = system2(pip_path, args = c("install", "-r", venv_packagesFile, "--use-pep517"))
