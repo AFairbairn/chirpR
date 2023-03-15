@@ -9,28 +9,7 @@
 #' ecoVAD.setup()}
 ecoVAD.setup <- function() {
   # Check python
-  os = Sys.info()[["sysname"]]
-  py_cmd = ifelse(os == "Windows", "python", "python3")
-  which_cmd = ifelse(os == "Windows", "where", "which")
-  py_paths = system(paste(which_cmd, py_cmd), intern = TRUE)
-
-  for (path in py_paths) {
-    py_version_cmd = paste0(path, " --version")
-    tryCatch({
-      py_version = system(py_version_cmd, intern = TRUE)
-      message(paste0('Python ', py_version, ' is installed.'))
-      found <<- TRUE
-    }, error = function(e) {
-      message(paste0('Warning: There was a problem checking for Python ', version, '.'))
-    })
-    if (grepl("Python ([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
-      py_path = path
-      py_version = py_version
-      break
-    }
-  }
-
-  message("Using Python version: ", py_version)
+  python_info = chirpR:::get_python_info()
 
   # Set the path to the virtual environment
   venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
@@ -39,21 +18,22 @@ ecoVAD.setup <- function() {
   #venv_packages = readLines(venv_packagesFile)
 
   # Check if the virtual environment already exists
+
   if (dir.exists(venv_path)) {
     message("Checking virtual environment...")
     # Virtual environment exists, check if packages are installed
     pip_path <- file.path(venv_path, "Scripts", "pip.exe")
     py_venv_path <- file.path(venv_path, "Scripts", "python.exe")
-    system2(py_venv_path, args = c("-m", "pip", "install", "--upgrade", "pip"))
-    system2(pip_path, args = c("install", "-r", venv_packagesFile, "--use-pep517"))
   } else {
     # Create a new virtual environment
     message("Creating virtual environment...")
-    system2(py_path, args = c("-m", "venv", venv_path))
-    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
-    system2(pip_path, args = c("install", "-r", venv_packagesFile))
+    system2(python_info$py_path, args = c("-m", "venv", venv_path))
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip.exe")
   }
-
+  tryCatch({
+    system2(pip_path, args = c("install", "-r", venv_packagesFile, "--use-pep517"))
+  }, error = function(e) {
+    stop(paste0("An error occurred: ", e))
+  })
   message("ecoVAD setup sucessful! You may now use ecoVAD functions.")
-
 }
