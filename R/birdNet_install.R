@@ -24,35 +24,7 @@ birdNet.install <- function(path, ...) {
   bnPath = file.path(downloadPath, "BirdNet-Analyzer-main")
 
   # Check python
-  os = Sys.info()[["sysname"]]
-  py_cmd = ifelse(os == "Windows", "python", "python3")
-  which_cmd = ifelse(os == "Windows", "where", "which")
-  py_paths = system(paste(which_cmd, py_cmd), intern = TRUE)
-
-  for (path in py_paths) {
-    py_version_cmd = paste0(path, " --version")
-    tryCatch({
-      py_version = system(py_version_cmd, intern = TRUE)
-      message(paste0('Python ', py_version, ' is installed.'))
-      found <<- TRUE
-    }, error = function(e) {
-      message(paste0('Warning: There was a problem checking for Python ', version, '.'))
-    })
-    if (grepl("Python ([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
-      py_path = path
-      py_version = py_version
-      break
-    }
-  }
-
-  if (length(py_version) == 0) {
-    stop("No compatible version of Python found. Please install Python 3.7 to 3.10.")
-  }
-
-  message("Using Python version: ", py_version)
-
-
-  py_cmd <- tolower(py_version)
+  python_info = chirpR:::get_python_info()
 
   # Check for existing BirdNet installation
   if(dir.exists(bnPath)){
@@ -75,22 +47,27 @@ birdNet.install <- function(path, ...) {
   venv_packages = readLines(venv_packagesFile)
 
   # Check if the virtual environment already exists
-  if (dir.exists(venv_path)) {
+   if (dir.exists(venv_path)) {
     message("Checking virtual environment...")
     # Virtual environment exists, check if packages are installed
-    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
-    system2(pip_path, args = c("install", venv_packages))
+    pip_path = file.path(venv_path, python_info$venv_activate_cmd, "pip")
+    py_venv_path = file.path(venv_path, python_info$venv_activate_cmd, "python.exe")
   } else {
     # Create a new virtual environment
     message("Creating virtual environment...")
-    system2(py_path, args = c("-m", "venv", venv_path))
-    #system(paste0(py_path, " -m venv ", venv_path))
-    pip_path <- file.path(venv_path, "Scripts", "pip.exe")
-    system2(pip_path, args = c("install", venv_packages))
-    #system2(py_path, args = c("-m", "pip", "install", venv_packages), env = c("VIRTUAL_ENV" = venv_path))
+    exit_status = system2(python_info$py_path, args = c("-m", "venv", venv_path))
+    if (exit_status != 0) {
+      stop("An error occurred while creating virtual environment.")
+    }
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip")
   }
 
-  message("Done! BirdNET is ready to use.")
+  exit_status = system2(pip_path, args = c("install", "-r", venv_packagesFile))
+  if (exit_status != 0) {
+    stop("An error occurred while creating virtual environment.")
+  }
+  message("BirdNet install sucessful! BirdNET is ready to use.")
+
 }
 
 
