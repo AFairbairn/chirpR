@@ -90,7 +90,7 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
   }
 
   # Check if a virtual environment is active
-  venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
+  venv_path = file.path(system.file(package = "chirpR"), "ecoVAD_venv")
   if(!file.exists(file.path(venv_path, "pyvenv.cfg"))){
     stop("Virtual environment not found. Please check installation or use ecoVAD.setup()")
   }
@@ -102,20 +102,20 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     # macOS/Linux
     py_path = file.path(venv_path, "bin", "python")
   }
-
+  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
   if(trainOnly){
     message("Training ecoVAD model...")
-    make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "train_model.py")
+    make_model = file.path(package_path, "VAD_algorithms", "ecovad", "train_model.py")
     exit_status = system2(py_path, args = c("-m", make_model, "--config", configPath))
   } else if(!train){
     # Run make data
     message("Creating synthetic data...")
-    make_data = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "VAD_algorithms", "ecovad", "make_data.py")
+    make_data = file.path(package_path, "VAD_algorithms", "ecovad", "make_data.py")
     exit_status = system2(py_path, args = c("-m", make_data, "--config", configPath))
   } else {
     # Run train
     message("Creating synthetic data and training model...")
-    make_model = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "train_ecovad.py")
+    make_model = file.path(package_path, "train_ecovad.py")
     exit_status = system2(py_path, args = c("-m", make_model, "--config", configPath))
   }
   if (exit_status != 0) {
