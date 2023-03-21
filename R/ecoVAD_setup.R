@@ -39,6 +39,21 @@ ecoVAD.setup <- function() {
   if (exit_status != 0) {
     stop("An error occurred while creating virtual environment.")
   }
+
+  # Extract the major and minor version numbers from py_version
+  version_numbers = strsplit(python_info$py_version, "\\.")[[1]]
+  major_version = version_numbers[1]
+  minor_version = version_numbers[2]
+  # Set the path to the site-packages directory
+  site_packages_path = file.path(venv_path, "lib", paste0("python", major_version, ".", minor_version), "site-packages")
+  # Set the path to our .pth file
+  pth_file_path = file.path(site_packages_path, "my_package.pth")
+  # Set the path to our top-level package
+  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
+
+  # Write the path to our top-level package to our .pth file
+  writeLines(package_path, pth_file_path)
+
   message("ecoVAD setup sucessful! You may now use ecoVAD functions.")
 
   if (!.Platform$OS.type == "windows") {

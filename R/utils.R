@@ -19,7 +19,7 @@ get_python_info <- function() {
     }, error = function(e) {
       message(paste0('Warning: There was a problem checking for Python ', version, '.'))
     })
-    if (grepl("Python ([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
+    if (grepl("([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
       py_path = path
       py_version = py_version
       break
