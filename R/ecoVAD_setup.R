@@ -13,7 +13,7 @@ ecoVAD.setup <- function() {
   python_info = chirpR:::get_python_info()
 
   # Set the path to the virtual environment
-  venv_path = file.path(system.file(package = "chirpR"), "ecoVAD_venv")
+  venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
   # Load dependencies list
   venv_packagesFile = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "requirements.txt")
   #venv_packages = readLines(venv_packagesFile)

@@ -88,9 +88,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
       dir.create(CKPT_SAVE_PATH)
     }
   }
-
+  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
   # Check if a virtual environment is active
-  venv_path = file.path(system.file(package = "chirpR"), "ecoVAD_venv")
+  venv_path = file.path(package_path, "ecoVAD_venv")
   if(!file.exists(file.path(venv_path, "pyvenv.cfg"))){
     stop("Virtual environment not found. Please check installation or use ecoVAD.setup()")
   }
@@ -102,7 +102,7 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     # macOS/Linux
     py_path = file.path(venv_path, "bin", "python")
   }
-  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
+
   if(trainOnly){
     message("Training ecoVAD model...")
     make_model = file.path(package_path, "VAD_algorithms", "ecovad", "train_model.py")
