@@ -13,7 +13,7 @@ ecoVAD.setup <- function() {
   python_info = chirpR:::get_python_info()
 
   # Set the path to the virtual environment
-  venv_path = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "ecoVAD_venv")
+  venv_path = file.path(system.file(package = "chirpR"), "ecoVAD_venv")
   # Load dependencies list
   venv_packagesFile = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "requirements.txt")
   #venv_packages = readLines(venv_packagesFile)
@@ -39,17 +39,6 @@ ecoVAD.setup <- function() {
   if (exit_status != 0) {
     stop("An error occurred while creating virtual environment.")
   }
-
-  # Extract the major and minor version numbers from py_version
-  version_numbers = strsplit(python_info$py_version, "\\.")[[1]]
-  major_version = version_numbers[1]
-  minor_version = version_numbers[2]
-  # Set the path to the site-packages directory
-  site_packages_path = file.path(venv_path, "lib", paste0("python", major_version, ".", minor_version), "site-packages")
-  # Set the path to our .pth file
-  pth_file_path = file.path(site_packages_path, "my_package.pth")
-  # Set the path to our top-level package
-  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
 
   # Write the path to our top-level package to our .pth file
   writeLines(package_path, pth_file_path)
