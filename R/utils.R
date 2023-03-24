@@ -5,9 +5,15 @@
 #' @return A list with the values for `py_path`, `py_cmd`, and `venv_activate_cmd`.
 get_python_info <- function() {
   os = Sys.info()[["sysname"]]
-  py_cmd = ifelse(os == "Windows", "python", "python3")
+  py_cmd = ifelse(os == "Windows", "python", c("python3", "python3.7", "python3.8", "python3.9", "python3.10"))
   which_cmd = ifelse(os == "Windows", "where", "which")
   venv_activate_cmd = ifelse(os == "Windows", "Scripts", "bin")
+  if(!os=="Windows"){
+    py_paths = list()
+    for(cmd in py_cmd){
+      py_paths = append(py_paths, system2(which_cmd, args = c(py_cmd), stdout = TRUE))
+    }
+  }
   py_paths = system2(which_cmd, args = c(py_cmd), stdout = TRUE)
 
   num_paths = length(py_paths)
