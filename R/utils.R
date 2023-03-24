@@ -9,9 +9,9 @@ get_python_info <- function() {
   which_cmd = ifelse(os == "Windows", "where", "which")
   venv_activate_cmd = ifelse(os == "Windows", "Scripts", "bin")
 
-  py_paths = system2(which_cmd, args = c(py_cmd), stdout = TRUE)
-
-  if(!os=="Windows"){
+  if(os=="Windows"){
+    py_paths = system2(which_cmd, args = c(py_cmd), stdout = TRUE)
+  } else {
     py_paths = list()
     for(cmd in py_cmd){
       py_paths = append(py_paths, system2(which_cmd, args = c(py_cmd), stdout = TRUE))
