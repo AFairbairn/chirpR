@@ -40,9 +40,6 @@ ecoVAD.setup <- function() {
     stop("An error occurred while creating virtual environment.")
   }
 
-  # Write the path to our top-level package to our .pth file
-  writeLines(package_path, pth_file_path)
-
   message("ecoVAD setup sucessful! You may now use ecoVAD functions.")
 
   if (!.Platform$OS.type == "windows") {

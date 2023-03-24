@@ -8,24 +8,29 @@ get_python_info <- function() {
   py_cmd = ifelse(os == "Windows", "python", "python3")
   which_cmd = ifelse(os == "Windows", "where", "which")
   venv_activate_cmd = ifelse(os == "Windows", "Scripts", "bin")
-  py_paths = system(paste(which_cmd, py_cmd), intern = TRUE)
+  py_paths = system2(which_cmd, args = c(py_cmd), stdout = TRUE)
 
-  for (path in py_paths) {
-    py_version_cmd = paste0(path, " --version")
+  num_paths = length(py_paths)
+  for (i in seq_along(py_paths)) {
+    path = py_paths[i]
     tryCatch({
-      py_version = system(py_version_cmd, intern = TRUE)
+      temp_file = tempfile()
+      exit_status = system2(path, args = c("--version"), stdout = temp_file, stderr = temp_file)
+      if (exit_status != 0 && i == num_paths) {
+        stop(paste0("Error: There was a problem checking for Python ", path, ". Exit status: ", exit_status))
+      }
+      py_version = readLines(temp_file)
       message(paste0(py_version, ' is installed.'))
       found = TRUE
     }, error = function(e) {
-      message(paste0('Warning: There was a problem checking for Python ', version, '.'))
+      message(e$message)
     })
     if (grepl("([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
       py_path = path
       py_version = py_version
-      break
+      message("Using Python version: ", py_version)
+      return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd))
     }
   }
-  message("Using Python version: ", py_version)
-
-  return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd))
+  warning("Please install Python 3.7 - 3.10 or ensure that Python is in PATH!")
 }

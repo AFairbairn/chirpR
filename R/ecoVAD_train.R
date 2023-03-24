@@ -54,16 +54,18 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
         stop("NOISE_DIR required!")
       }
       if(missing(AUDIO_OUT_DIR)){
-        AUDIO_OUT_DIR = "./synthetic_data"
+        while(TRUE){
+          ans = readline(prompt="Using current working directory for saving synthetic data. Continue (y/n)? ")
+          ifelse(tolower(ans)=="y", break, ifelse(tolower(ans)=="n", stop(), print("Please enter y/n.")))
+        }
+        AUDIO_OUT_DIR = file.path(getwd(), "synthetic_data")
       }
     }
     config = yaml::read_yaml(configPath)
     config$AUDIO_PATH = AUDIO_PATH
     config$SPEECH_DIR = SPEECH_DIR
     config$NOISE_DIR = NOISE_DIR
-    if(!dir.exists(AUDIO_OUT_DIR)){
-      dir.create(AUDIO_OUT_DIR)
-    }
+
     config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
     config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
 
@@ -72,6 +74,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
       params = list(...)
       # Update values based on user input
       for (name in names(params)) {
+        if(name == "NUM_WORKERS"){
+          params[[name]] = as.integer(params[[name]])
+        }
         config[[name]] = params[[name]]
       }
 
@@ -81,12 +86,6 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     # Create output file pats if they don't exist
     MODEL_SAVE_PATH = dirname(config$MODEL_SAVE_PATH)
     CKPT_SAVE_PATH = dirname(config$CKPT_SAVE_PATH)
-    if(!dir.exists(MODEL_SAVE_PATH)){
-      dir.create(MODEL_SAVE_PATH)
-    }
-    if(!dir.exists(CKPT_SAVE_PATH)){
-      dir.create(CKPT_SAVE_PATH)
-    }
   }
   package_path = system.file("ecoVAD_chirpR", package = "chirpR")
   # Check if a virtual environment is active
@@ -104,19 +103,38 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
   }
 
   if(trainOnly){
+    # Run train model
+    if(!dir.exists(MODEL_SAVE_PATH)){
+      dir.create(MODEL_SAVE_PATH)
+    }
+    if(!dir.exists(CKPT_SAVE_PATH)){
+      dir.create(CKPT_SAVE_PATH)
+    }
     message("Training ecoVAD model...")
     make_model = file.path(package_path, "VAD_algorithms", "ecovad", "train_model.py")
-    exit_status = system2(py_path, args = c("-m", make_model, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   } else if(!train){
+    if(!dir.exists(AUDIO_OUT_DIR)){
+      dir.create(AUDIO_OUT_DIR)
+    }
     # Run make data
     message("Creating synthetic data...")
     make_data = file.path(package_path, "VAD_algorithms", "ecovad", "make_data.py")
-    exit_status = system2(py_path, args = c("-m", make_data, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_data, "--config", configPath))
   } else {
-    # Run train
+    # Run train_ecovad
+    if(!dir.exists(MODEL_SAVE_PATH)){
+      dir.create(MODEL_SAVE_PATH)
+    }
+    if(!dir.exists(CKPT_SAVE_PATH)){
+      dir.create(CKPT_SAVE_PATH)
+    }
+    if(!dir.exists(AUDIO_OUT_DIR)){
+      dir.create(AUDIO_OUT_DIR)
+    }
     message("Creating synthetic data and training model...")
     make_model = file.path(package_path, "train_ecovad.py")
-    exit_status = system2(py_path, args = c("-m", make_model, "--config", configPath))
+    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   }
   if (exit_status != 0) {
     stop(paste0("Exit status: ", exit_status, " An error occurred while creating the synthetic data or training the model."))
