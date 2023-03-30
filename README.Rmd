@@ -78,7 +78,7 @@ head(results[,c(4:6)])
 
 Setup ecoVAD:
 
-```{r }
+```{r, cache = TRUE}
 library(chirpR)
 
 ## Setup ecoVad
@@ -95,4 +95,5 @@ The developers of [ecoVAD](https://github.com/NINAnor/ecoVAD) recommend training
 * German
     + [LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
     + [LibriVox MP3 bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
-    
+* Multilingual
+    + [Mozilla common voice](https://commonvoice.mozilla.org/en/datasets)

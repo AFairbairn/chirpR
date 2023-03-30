@@ -112,3 +112,6 @@ resources. Just contact me!
     -   [LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
     -   [LibriVox MP3
         bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
+-   Multilingual
+    -   [Mozilla common
+        voice](https://commonvoice.mozilla.org/en/datasets)

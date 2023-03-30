@@ -70,3 +70,6 @@ test.R
 
 # Rproject file
 *.Rproj
+
+# Testing files
+/test/

@@ -2,57 +2,39 @@
 % Please edit documentation in R/ecoVAD_anonymize.R
 \name{ecoVAD.anonymize}
 \alias{ecoVAD.anonymize}
-\title{Generates synthetic data for training and testing an ecoVAD model}
+\title{Anonoymizes input data using an ecoVAD model.}
 \usage{
-ecoVAD.anonymize(configPath, PATH_INPUT_DATA, ...)
+ecoVAD.anonymize(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, ...)
 }
 \arguments{
-\item{configPath}{Path to a custom config.yaml file. If not provided, included config file is used.}
+\item{configPath}{Path to a custom config.yaml file. If not provided, included config file is used and other parameters are required.}
 
-\item{PATH_INPUT_DATA}{Path to output synthetic training data. Defaults to current working directory/symthetic_dataset if not provided and no custom config file is used.}
+\item{PATH_INPUT_DATA}{Path to the data to be used for anonymization.}
+
+\item{ECOVAD_WEIGHTS_PATH}{Path to model weights file. e.g. ecoVAD_ckpt.pt}
 
 \item{...}{Other parameters to update in config_data.yaml}
 }
 \description{
-Additional parameters to pass to train_model.py must be in the format as in the config file:
-AUDIO_PATH: "./assets/demo_data/training_model/soundscape_data/" ** Only accepts .wav and .mp3!
+The anonymisation will by default output .json files for each input file that contains all detections made by the models.
 }
-\section{Path to the directory containing human speech files}{
-SPEECH_DIR: "./assets/demo_data/training_model/human_voices/"
+\details{
+\itemize{
+\item PATH_INPUT_DATA: # Path to the data to be anonymised
+\item PATH_JSON_DETECTIONS: # Path to the result files, namely json files containing the start and end of detections. Note: one json file is created per analysed file. Defaults to working directory/anonymised_data/detections
+\item PATH_ANONYMIZED_DATA: # Path to store the anonymised data \(i.e. audiofiles where human speech has clearly been removed\). Defaults to current working directory/anonymised_data.
+\item THRESHOLD: # Confidence threshold. Defaults to 0.7
+\item FRAME_LENGTH: # A frame must be either 10, 20, or 30 ms in duration. Defaults to 30ms.
+\item AGGRESSIVENESS: # aggressiveness mode, which is an integer between 0 and 3. 0 is the least aggressive about filtering out non-speech, 3 is the most aggressive. Defaults to 1.
+\item USE_GPU: # Whether ecoVAD and pyannote should be used on GPU. Defaults False.
+\item PATH_PARSED_JSON: # Path to where the parsed JSON and .csv file should go.
+\item PATH_SAMPLE_DETECTIONS: # Path where the detections should be stored
+\item NUMBER_OF_SAMPLES: # Number of samples that should be taken. Defaults to 0.
+\item RANDOM_SEED: # Random seed. Defaults to 42.
 }
-
-\section{Path to the directory containing noise (e.g. environmental noises, animal vocalization)}{
-NOISE_DIR: "./assets/demo_data/training_model/natural_sounds/"
 }
-
-\section{Length of the output audio file (in ms)}{
-LENGTH_SEGMENTS: 3
-}
-
-\section{Probability of including human speech on a given segment}{
-PROBA_SPEECH: 0.5
-}
-
-\section{When speech is added, what is the probability of adding noise to the segment}{
-PROBA_NOISE_WHEN_SPEECH: 0.5
-
-PROBA_NOISE_WHEN_NO_SPEECH: 0.9
-}
-
-\section{Path to the folder storing the segments}{
-AUDIO_OUT_DIR: "./assets/demo_data/training_model/synthetic_dataset"
-}
-
-\section{Whether the dataset should include background noises}{
-INCLUDE_NOISES: True
-}
-
-\section{Whether the dataset should include the soundscape}{
-INCLUDE_SOUNDSCAPE: True
-}
-
 \examples{
 \dontrun{
-ecoVAD.genSynth()
-ecoVAD.genSynth(path="C:/projectFolder/config.yaml")}
+ecoVAD.anonymize()
+ecoVAD.anonymize(path="C:/projectFolder/confing_inference.yaml")}
 }
