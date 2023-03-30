@@ -36,7 +36,7 @@ ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, .
     configPath = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_inference.yaml")
     config = yaml::read_yaml(configPath)
     PATH_ANONYMIZED_DATA = file.path(getwd(), "anonymised_data")
-    PATH_JSON_DETECTIONS = file.path(outPath, "detections")
+    PATH_JSON_DETECTIONS = file.path(PATH_ANONYMIZED_DATA, "detections")
     config$PATH_JSON_DETECTIONS = PATH_JSON_DETECTIONS
     config$PATH_ANONYMIZED_DATA = PATH_ANONYMIZED_DATA
     yaml::write_yaml(config, configPath)
@@ -63,6 +63,8 @@ ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, .
   # Folder creation, etc.
   # Check python
   python_info = chirpR:::get_python_info()
+  package_path = system.file("ecoVAD_chirpR", package = "chirpR")
+
   message("Anonymizing data...")
   anon_data = file.path(package_path, "anonymise_data.py")
   exit_status = system2(python_info$py_path, args = c(anon_data, "--config", configPath))
