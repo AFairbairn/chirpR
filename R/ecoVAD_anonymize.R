@@ -25,7 +25,6 @@
 #' \dontrun{
 #' ecoVAD.anonymize()
 #' ecoVAD.anonymize(path="C:/projectFolder/confing_inference.yaml")}
-#' @importFrom utils download.file unzip
 ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, ...) {
   if(missing(configPath)){
     if(missing(PATH_INPUT_DATA)){
