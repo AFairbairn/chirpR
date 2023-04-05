@@ -19,7 +19,7 @@
 #' @param configPath Path to a custom config.yaml file. If not provided, included config file is used and other parameters are required.
 #' @param PATH_INPUT_DATA Path to the data to be used for anonymization.
 #' @param ECOVAD_WEIGHTS_PATH Path to model weights file. e.g. ecoVAD_ckpt.pt
-#' @param ... Other parameters to update in config_data.yaml
+#' @param ... Other parameters to update in config_inference.yaml
 #' @export
 #' @examples
 #' \dontrun{
@@ -39,6 +39,8 @@ ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, .
     PATH_JSON_DETECTIONS = file.path(PATH_ANONYMIZED_DATA, "detections")
     config$PATH_JSON_DETECTIONS = PATH_JSON_DETECTIONS
     config$PATH_ANONYMIZED_DATA = PATH_ANONYMIZED_DATA
+    config$ECOVAD_WEIGHTS_PATH = ECOVAD_WEIGHTS_PATH
+    config$PATH_INPUT_DATA = PATH_INPUT_DATA
     yaml::write_yaml(config, configPath)
   }
   if(!missing(...)){
@@ -63,12 +65,26 @@ ecoVAD.anonymize <- function(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, .
   # Folder creation, etc.
   # Check python
   python_info = chirpR:::get_python_info()
+
   package_path = system.file("ecoVAD_chirpR", package = "chirpR")
+  # Check if a virtual environment is active
+  venv_path = file.path(package_path, "ecoVAD_venv")
+  if(!file.exists(file.path(venv_path, "pyvenv.cfg"))){
+    stop("Virtual environment not found. Please check installation or use ecoVAD.setup()")
+  }
+
+  if (.Platform$OS.type == "windows") {
+    # Windows
+    py_path = file.path(venv_path, "Scripts", "python")
+  } else {
+    # macOS/Linux
+    py_path = file.path(venv_path, "bin", "python")
+  }
 
   message("Anonymizing data...")
   anon_data = file.path(package_path, "anonymise_data.py")
-  exit_status = system2(python_info$py_path, args = c(anon_data, "--config", configPath))
+  exit_status = system2(py_path, args = c(anon_data, "--config", configPath))
   if (exit_status != 0) {
-    stop(paste0("Exit status: ", exit_status, " An error occurred while creating the synthetic data or training the model."))
+    stop(paste0("Exit status: ", exit_status, ". An error occurred while creating the synthetic data or training the model."))
   }
 }
