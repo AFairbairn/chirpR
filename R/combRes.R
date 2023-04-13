@@ -16,7 +16,7 @@
 #' \dontrun{
 #' results <- combRes(path="C:/results folder/", rtype="table")
 #'
-#' results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv, rtype="table")}
+#' results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="table")}
 combRes <- function(path, rtype="r", recursive=T) {
   # Check if rtype is valid and set seperator
   if(rtype %in% c("table", "audacity")) {

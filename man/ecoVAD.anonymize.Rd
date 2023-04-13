@@ -13,7 +13,7 @@ ecoVAD.anonymize(configPath, PATH_INPUT_DATA, ECOVAD_WEIGHTS_PATH, ...)
 
 \item{ECOVAD_WEIGHTS_PATH}{Path to model weights file. e.g. ecoVAD_ckpt.pt}
 
-\item{...}{Other parameters to update in config_data.yaml}
+\item{...}{Other parameters to update in config_inference.yaml}
 }
 \description{
 The anonymisation will by default output .json files for each input file that contains all detections made by the models.
