@@ -4,16 +4,16 @@
 \alias{combRes}
 \title{Combines BirdNet results files}
 \usage{
-combRes(path, rtype = "r", recursive = T)
+combRes(path, outPath, rtype = "r", recursive = T)
 }
 \arguments{
 \item{path}{The path to the folder containing the .csv files.}
 
+\item{outPath}{If included the combined results will be saved to file. If not, only returned as a dataframe.}
+
 \item{rtype}{The BirdNet output file type. Defaults to r.}
 
 \item{recursive}{Defaults to True}
-
-\item{outPath}{If included the combined results will be saved to file. If not, only returned as a dataframe.}
 }
 \value{
 A dataframe of all files in path
