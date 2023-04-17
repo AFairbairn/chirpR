@@ -7,7 +7,7 @@
 renameRes(
   path,
   recursive = T,
-  input,
+  input = "auto",
   output,
   utc_offset = NULL,
   recordingName = NULL

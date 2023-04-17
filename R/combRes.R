@@ -9,13 +9,16 @@
 #' @param path The path to the folder containing the .csv files.
 #' @param recursive Defaults to True
 #' @param rtype The BirdNet output file type. Defaults to r.
+#' @param outPath If included the combined results will be saved to file. If not, only returned as a dataframe.
 #' @return A dataframe of all files in path
 #' @export
 #' @examples
 #' \dontrun{
-#' results <- combRes(path="C:/results folder/", rtype="table")}
+#' results <- combRes(path="C:/results folder/", rtype="table")
+#'
+#' results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="table")}
 #' @import data.table
-combRes <- function(path, rtype="r", recursive=T) {
+combRes <- function(path, outPath, rtype="r", recursive=T) {
   # Check if rtype is valid and set seperator
   if(rtype %in% c("table", "audacity")) {
     sep = "\t"
@@ -39,6 +42,9 @@ combRes <- function(path, rtype="r", recursive=T) {
   # Load all files in to "result"
   result = data.table::rbindlist(sapply(files, data.table::fread, simplify = FALSE, sep = sep))
 
+  if(!missing(outPath)){
+    write.csv(result, outPath, row.names=FALSE)
+  }
 
   return(result)
 }
