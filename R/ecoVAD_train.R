@@ -77,8 +77,8 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
       }
     }
 
-    config$TRAIN = r_bool_to_py_bool(TRAIN)
-    config$TRAIN_ONLY = r_bool_to_py_bool(TRAIN_ONLY)
+    config$TRAIN = yaml::as.yaml(r_bool_to_py_bool(TRAIN))
+    config$TRAIN_ONLY = yaml::as.yaml(r_bool_to_py_bool(TRAIN_ONLY))
 
     if(!missing(...)){
       # Get user-provided parameters
