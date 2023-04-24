@@ -27,23 +27,23 @@
 #'  \item USE_GPU: False Whether to training pipeline should use a GPU
 #'}
 #' @param configPath Path to a custom config.yaml file. If provided, all other ecoVAD parameters are ignored and it is assumed that the folders exist! If not provided, included config file is used.
-#' @param AUDIO_PATH Path to directory with the audio files. Ignored if trainOnly.
-#' @param SPEECH_DIR Path to directory with the speech files. Ignored if trainOnly.
-#' @param NOISE_DIR Path to directory with the noise files. Ignored if trainOnly.
+#' @param AUDIO_PATH Path to directory with the audio files. Ignored if TRAIN_ONLY.
+#' @param SPEECH_DIR Path to directory with the speech files. Ignored if TRAIN_ONLY.
+#' @param NOISE_DIR Path to directory with the noise files. Ignored if TRAIN_ONLY.
 #' @param AUDIO_OUT_DIR Path to save the synthetic training data. Only needs to be provided if custom config not used.
 #' @param ... Other parameters to update in config_training.yaml
-#' @param train Logical, to just create synthetic data set to false. Defaults to true.
-#' @param trainOnly Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.
+#' @param TRAIN Logical, to just create synthetic data set to false. Defaults to true.
+#' @param TRAIN_ONLY Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.
 #' @export
 #' @examples
 #' \dontrun{
 #' ecoVAD.train()
 #' ecoVAD.train(path="C:/projectFolder/config.yaml")}
 #' @import yaml
-ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OUT_DIR, ..., train=TRUE, trainOnly=FALSE) {
+ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OUT_DIR, ..., TRAIN=TRUE, TRAIN_ONLY=FALSE) {
   if(missing(configPath)){
     configPath = file.path(system.file("ecoVAD_chirpR", package = "chirpR"), "config_training.yaml")
-    if(!trainOnly){
+    if(!TRAIN_ONLY){
       if(missing(AUDIO_PATH)){
         stop("AUDIO_PATH required!")
       }
@@ -68,6 +68,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
 
     config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
     config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
+
+    config$TRAIN = TRAIN
+    configTRAIN_ONLY = TRAIN_ONLY
 
     if(!missing(...)){
       # Get user-provided parameters
@@ -102,7 +105,7 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     py_path = file.path(venv_path, "bin", "python")
   }
 
-  if(trainOnly){
+  if(TRAIN_ONLY){
     # Run train model
     if(!dir.exists(MODEL_SAVE_PATH)){
       dir.create(MODEL_SAVE_PATH)
@@ -111,16 +114,12 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
       dir.create(CKPT_SAVE_PATH)
     }
     message("Training ecoVAD model...")
-    make_model = file.path(package_path, "VAD_algorithms", "ecovad", "train_model.py")
-    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
-  } else if(!train){
+  } else if(!TRAIN){
     if(!dir.exists(AUDIO_OUT_DIR)){
       dir.create(AUDIO_OUT_DIR)
     }
     # Run make data
     message("Creating synthetic data...")
-    make_data = file.path(package_path, "VAD_algorithms", "ecovad", "make_data.py")
-    exit_status = system2(py_path, args = c(make_data, "--config", configPath))
   } else {
     # Run train_ecovad
     if(!dir.exists(MODEL_SAVE_PATH)){
@@ -133,9 +132,9 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
       dir.create(AUDIO_OUT_DIR)
     }
     message("Creating synthetic data and training model...")
-    make_model = file.path(package_path, "train_ecovad.py")
-    exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   }
+  make_model = file.path(package_path, "train_ecovad.py")
+  exit_status = system2(py_path, args = c(make_model, "--config", configPath))
   if (exit_status != 0) {
     stop(paste0("Exit status: ", exit_status, " An error occurred while creating the synthetic data or training the model."))
   }

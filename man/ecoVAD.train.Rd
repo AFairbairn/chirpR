@@ -11,26 +11,26 @@ ecoVAD.train(
   NOISE_DIR,
   AUDIO_OUT_DIR,
   ...,
-  train = TRUE,
-  trainOnly = FALSE
+  TRAIN = TRUE,
+  TRAIN_ONLY = FALSE
 )
 }
 \arguments{
 \item{configPath}{Path to a custom config.yaml file. If provided, all other ecoVAD parameters are ignored and it is assumed that the folders exist! If not provided, included config file is used.}
 
-\item{AUDIO_PATH}{Path to directory with the audio files. Ignored if trainOnly.}
+\item{AUDIO_PATH}{Path to directory with the audio files. Ignored if TRAIN_ONLY.}
 
-\item{SPEECH_DIR}{Path to directory with the speech files. Ignored if trainOnly.}
+\item{SPEECH_DIR}{Path to directory with the speech files. Ignored if TRAIN_ONLY.}
 
-\item{NOISE_DIR}{Path to directory with the noise files. Ignored if trainOnly.}
+\item{NOISE_DIR}{Path to directory with the noise files. Ignored if TRAIN_ONLY.}
 
 \item{AUDIO_OUT_DIR}{Path to save the synthetic training data. Only needs to be provided if custom config not used.}
 
 \item{...}{Other parameters to update in config_training.yaml}
 
-\item{train}{Logical, to just create synthetic data set to false. Defaults to true.}
+\item{TRAIN}{Logical, to just create synthetic data set to false. Defaults to true.}
 
-\item{trainOnly}{Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.}
+\item{TRAIN_ONLY}{Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.}
 }
 \description{
 Create synthetic data nd train an ecoVAD model. If custom config file is provided,
