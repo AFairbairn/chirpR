@@ -69,8 +69,8 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
     config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
 
-    config$TRAIN = ifelse(TRAIN, "true", "false")
-    config$TRAIN_ONLY = ifelse(TRAIN_ONLY, "true", "false")
+    config$TRAIN = as(paste(TRAIN), "logical")
+    config$TRAIN_ONLY = as(paste(TRAIN_ONLY), "logical")
 
     if(!missing(...)){
       # Get user-provided parameters
