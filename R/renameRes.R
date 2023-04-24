@@ -15,7 +15,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' renameRes(path="path/to/files", output=BAR_LT, utc_offset=0200, recordingName="site5")}
+#' renameRes(path="path/to/files", output=BAR_LT, utc_offset="0200", recordingName="site5")}
 #' @import tools
 renameRes <- function(path, recursive=T, input="auto", output, utc_offset=NULL, recordingName=NULL) {
 
@@ -77,8 +77,8 @@ renameRes <- function(path, recursive=T, input="auto", output, utc_offset=NULL, 
     return(components)
   }
 
-  construct_file_name <- function(components, pattern_name, recordingName = NULL, utc_offset = NULL) {
-    if("recordingName" %in% names(components)){
+  construct_file_name <- function(components, pattern_name, recordingName = recordingName, utc_offset = NULL) {
+    if(is.null(recordingName) && "recordingName" %in% names(components)){
       recordingName = components["recordingName"]
     }
     if (pattern_name == "BAR_LT") {
