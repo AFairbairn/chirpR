@@ -1,6 +1,6 @@
 Package: chirpR
 Title: Helpful Functions For Analyzing BirdNet Analyze Results
-Version: 0.2.0
+Version: 0.2.2
 Authors@R: 
     person("Andrew J.", "Fairbairn", , "andrew.fairbairn@tum.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2826-3465"))

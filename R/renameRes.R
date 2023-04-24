@@ -19,8 +19,13 @@
 #' @import tools
 renameRes <- function(path, recursive=T, input="auto", output, utc_offset=NULL, recordingName=NULL) {
 
-  if(output=="BAR_LT" && is.null(utc_offset)){
-    stop("utc_offset required to convert to BAR_LT format!")
+  if(output=="BAR_LT"){
+    if(is.null(utc_offset)) {
+      stop("utc_offset required to convert to BAR_LT format!")
+    }
+    if(!is.character(utc_offset)){
+      stop(paste0("utc_offset must be a string, please wrap ", utc_offset, " in quotes."))
+    }
   }
 
   # TODO: Add copy files with new name instead of rename!

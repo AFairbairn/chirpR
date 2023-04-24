@@ -35,5 +35,5 @@ naming pattern/scheme. All files will be renamed!
 }
 \examples{
 \dontrun{
-renameRes(path="path/to/files", output=BAR_LT, utc_offset=0200, recordingName="site5")}
+renameRes(path="path/to/files", output=BAR_LT, utc_offset="0200", recordingName="site5")}
 }
