@@ -69,8 +69,16 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
     config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
 
-    config$TRAIN = TRAIN
-    configTRAIN_ONLY = TRAIN_ONLY
+    r_bool_to_py_bool = function(r_bool) {
+      if (r_bool %in% c(T, TRUE)) {
+        return("True")
+      } else {
+        return("False")
+      }
+    }
+
+    config$TRAIN = r_bool_to_py_bool(TRAIN)
+    config$TRAIN_ONLY = r_bool_to_py_bool(TRAIN_ONLY)
 
     if(!missing(...)){
       # Get user-provided parameters
