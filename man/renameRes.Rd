@@ -6,6 +6,7 @@
 \usage{
 renameRes(
   path,
+  copy_path = NULL,
   recursive = T,
   input = "auto",
   output,
@@ -15,6 +16,8 @@ renameRes(
 }
 \arguments{
 \item{path}{The path to the folder containing the acoustic files you want to rename.}
+
+\item{copy_path}{If present, path will be the input path and the files will be copied to the copy_path location with the new filename.}
 
 \item{recursive}{Defaults to True}
 
