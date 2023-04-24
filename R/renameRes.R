@@ -7,6 +7,7 @@
 #' naming pattern/scheme. All files will be renamed!
 #'
 #' @param path The path to the folder containing the acoustic files you want to rename.
+#' @param copy_path If present, path will be the input path and the files will be copied to the copy_path location with the new filename.
 #' @param recursive Defaults to True
 #' @param input The input file scheme, i.e. the file scheme you want to change. If auto, renameRes will attempt to detect the scheme.
 #' @param output The output file scheme. Any value in BAR, BAR_LT, Audiomoth, SM4
@@ -17,7 +18,7 @@
 #' \dontrun{
 #' renameRes(path="path/to/files", output=BAR_LT, utc_offset="0200", recordingName="site5")}
 #' @import tools
-renameRes <- function(path, recursive=T, input="auto", output, utc_offset=NULL, recordingName=NULL) {
+renameRes <- function(path, copy_path=NULL, recursive=T, input="auto", output, utc_offset=NULL, recordingName=NULL) {
 
   if(output=="BAR_LT"){
     if(is.null(utc_offset)) {
@@ -117,6 +118,17 @@ renameRes <- function(path, recursive=T, input="auto", output, utc_offset=NULL, 
                           paste0(new_file_names,
                                 ".", tools::file_ext(files)))
 
-  invisible(file.rename(from = files, to = new_files))
+  if (!is.null(copy_path)) {
+    if (!dir.exists(copy_path)) {
+      dir.create(copy_path, recursive = TRUE)
+    }
+    new_files_copy <- file.path(copy_path, new_file_names)
+    for (i in seq_along(files)) {
+      file.copy(from = files[i], to = new_files_copy[i], overwrite = FALSE)
+    }
+  } else {
+    invisible(file.rename(from = files, to = new_files))
+  }
+
   print("Finished!")
 }
