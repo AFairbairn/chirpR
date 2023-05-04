@@ -69,7 +69,7 @@ birdNet.analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
   }
 
   # Check if rtype is valid
-  if(!rtype %in% c("table", "audacity", "r", "csv")) {
+  if(!rtype %in% c("table", "audacity", "r", "kaleidoscope", "csv")) {
     stop("Invalid output type. Must be table, audacity, r or csv. Default is r.")
   }
 
