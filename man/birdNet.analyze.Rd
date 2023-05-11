@@ -9,7 +9,7 @@ birdNet.analyze(i, o, rtype = "r", ..., result = TRUE, path)
 \arguments{
 \item{i}{Path to input .wav files for BirdNet analysis.}
 
-\item{o}{Output file location}
+\item{o}{Output file location. If not provided defaults to current working directory /bnResults.}
 
 \item{rtype}{The output file type. Defaults to r}
 

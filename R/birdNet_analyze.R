@@ -23,7 +23,7 @@
 #' If BirdNet was not installed using BirdNet.install() you must set path.
 #'
 #' @param i Path to input .wav files for BirdNet analysis.
-#' @param o Output file location
+#' @param o Output file location. If not provided defaults to current working directory /bnResults.
 #' @param rtype The output file type. Defaults to r
 #' @param ... Other parameters to be passed to analyze.py
 #' @param result Logical, determines if you want to import the result as a dataframe defaults True
@@ -48,7 +48,7 @@ birdNet.analyze <- function(i, o, rtype="r", ..., result=TRUE, path){
 
   # Create output directory if none provided
   if(missing(o)){
-    o = "./bnResults"
+    o = "/bnResults"
     if(!dir.exists(o)){
       dir.create(o)
     }

@@ -8,15 +8,15 @@
 #'
 #' @param path The path to the folder containing the .csv files.
 #' @param recursive Defaults to True
-#' @param rtype The BirdNet output file type. Defaults to r.
+#' @param rtype The BirdNet output file type. Defaults to r. Just to detect if it needs to look for .csv or .txt files.
 #' @param outPath If included the combined results will be saved to file. If not, only returned as a dataframe.
 #' @return A dataframe of all files in path
 #' @export
 #' @examples
 #' \dontrun{
-#' results <- combRes(path="C:/results folder/", rtype="table")
+#' results <- combRes(path="C:/results folder/", rtype="r")
 #'
-#' results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="table")}
+#' results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="r")}
 #' @import data.table
 combRes <- function(path, outPath, rtype="r", recursive=T) {
   # Check if rtype is valid and set seperator

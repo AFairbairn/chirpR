@@ -11,7 +11,7 @@ combRes(path, outPath, rtype = "r", recursive = T)
 
 \item{outPath}{If included the combined results will be saved to file. If not, only returned as a dataframe.}
 
-\item{rtype}{The BirdNet output file type. Defaults to r.}
+\item{rtype}{The BirdNet output file type. Defaults to r. Just to detect if it needs to look for .csv or .txt files.}
 
 \item{recursive}{Defaults to True}
 }
@@ -27,7 +27,7 @@ recursive=T is default.
 }
 \examples{
 \dontrun{
-results <- combRes(path="C:/results folder/", rtype="table")
+results <- combRes(path="C:/results folder/", rtype="r")
 
-results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="table")}
+results <- combRes(path="C:/results folder/", outPath="C:/results/final/combined.csv", rtype="r")}
 }

@@ -86,6 +86,13 @@ head(results[,c(4:6)])
 #> 6:  Turdus viscivorus      Mistle Thrush     0.2606
 ```
 
+:warning: **If you are using Linux or RStudio Server** There is an issue
+where birdNet.analyze() may not find the location of the birdNET
+installation. If birdNet.install() runs correctly and you run into this
+issue, please add
+path=“{path.to.R.packages}/chirpR/birdNet/BirdNET-Analyzer-main” to
+birdNet.analyze().
+
 ## ecoVAD Example
 
 Setup ecoVAD:

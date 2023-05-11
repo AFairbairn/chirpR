@@ -30,10 +30,10 @@
 #' @param AUDIO_PATH Path to directory with the audio files. Ignored if TRAIN_ONLY.
 #' @param SPEECH_DIR Path to directory with the speech files. Ignored if TRAIN_ONLY.
 #' @param NOISE_DIR Path to directory with the noise files. Ignored if TRAIN_ONLY.
-#' @param AUDIO_OUT_DIR Path to save the synthetic training data. Only needs to be provided if custom config not used.
+#' @param AUDIO_OUT_DIR Path to save the synthetic training data. Only needs to be provided if custom config not used and TRAIN_ONLY not set to TRUE.
 #' @param ... Other parameters to update in config_training.yaml
 #' @param TRAIN Logical, to just create synthetic data set to false. Defaults to true.
-#' @param TRAIN_ONLY Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.
+#' @param TRAIN_ONLY Logical, use if you have an existing synthetic dataset that you just want to train.
 #' @export
 #' @examples
 #' \dontrun{
@@ -60,17 +60,18 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
         }
         AUDIO_OUT_DIR = file.path(getwd(), "synthetic_data")
       }
+      config = yaml::read_yaml(configPath)
+      config$AUDIO_PATH = AUDIO_PATH
+      config$SPEECH_DIR = SPEECH_DIR
+      config$NOISE_DIR = NOISE_DIR
+
+      config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
+      config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
+
+      config$TRAIN = as(paste(TRAIN), "logical")
+      config$TRAIN_ONLY = as(paste(TRAIN_ONLY), "logical")
     }
-    config = yaml::read_yaml(configPath)
-    config$AUDIO_PATH = AUDIO_PATH
-    config$SPEECH_DIR = SPEECH_DIR
-    config$NOISE_DIR = NOISE_DIR
 
-    config$AUDIO_OUT_DIR = AUDIO_OUT_DIR
-    config$TRAIN_VAL_PATH = AUDIO_OUT_DIR
-
-    config$TRAIN = as(paste(TRAIN), "logical")
-    config$TRAIN_ONLY = as(paste(TRAIN_ONLY), "logical")
 
     if(!missing(...)){
       # Get user-provided parameters
@@ -82,7 +83,6 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
         }
         config[[name]] = params[[name]]
       }
-
     }
     yaml::write_yaml(config, configPath)
 
@@ -90,6 +90,7 @@ ecoVAD.train <- function(configPath, AUDIO_PATH, SPEECH_DIR, NOISE_DIR, AUDIO_OU
     MODEL_SAVE_PATH = dirname(config$MODEL_SAVE_PATH)
     CKPT_SAVE_PATH = dirname(config$CKPT_SAVE_PATH)
   }
+
   package_path = system.file("ecoVAD_chirpR", package = "chirpR")
   # Check if a virtual environment is active
   venv_path = file.path(package_path, "ecoVAD_venv")

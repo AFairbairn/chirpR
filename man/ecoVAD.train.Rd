@@ -24,13 +24,13 @@ ecoVAD.train(
 
 \item{NOISE_DIR}{Path to directory with the noise files. Ignored if TRAIN_ONLY.}
 
-\item{AUDIO_OUT_DIR}{Path to save the synthetic training data. Only needs to be provided if custom config not used.}
+\item{AUDIO_OUT_DIR}{Path to save the synthetic training data. Only needs to be provided if custom config not used and TRAIN_ONLY not set to TRUE.}
 
 \item{...}{Other parameters to update in config_training.yaml}
 
 \item{TRAIN}{Logical, to just create synthetic data set to false. Defaults to true.}
 
-\item{TRAIN_ONLY}{Logical, use if you have an existing synthetic dataset that you just want to train. AUDIO_OUT_DIR is ignored.}
+\item{TRAIN_ONLY}{Logical, use if you have an existing synthetic dataset that you just want to train.}
 }
 \description{
 Create synthetic data nd train an ecoVAD model. If custom config file is provided,

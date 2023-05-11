@@ -13,7 +13,7 @@ birdNet.install(path, ...)
 }
 \description{
 birdNet.install downloads the latest version of BirdNet from github and installs
-it and the necessary python libraries in the users home directory,
+it and the necessary python libraries using a virtual environment in the package directory,
 unless otherwise specified. Directory ~/BirdNet-Analyzer/BirdNet-Analyzer-main.
 When specifying a home directory, this same directory must be used as path in
 analyze().
