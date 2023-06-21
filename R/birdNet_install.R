@@ -63,7 +63,7 @@ birdNet.install <- function(path, ...) {
     if (exit_status != 0) {
       stop("An error occurred while creating virtual environment.")
     }
-    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, "pip")
+    pip_path <- file.path(venv_path, python_info$venv_activate_cmd, python_info$py_cmd, "pip")
   }
 
   exit_status = system2(pip_path, args = c("install", "-r", venv_packagesFile))
