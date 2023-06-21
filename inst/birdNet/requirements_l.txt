@@ -1,0 +1,3 @@
+tflite-runtime
+librosa
+resampy

@@ -37,7 +37,7 @@ get_python_info <- function() {
       py_path = path
       py_version = py_version
       message("Using Python version: ", py_version)
-      return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd))
+      return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd, os = os))
     }
   }
   warning("Please install Python 3.7 - 3.10 or ensure that Python is in PATH!")
