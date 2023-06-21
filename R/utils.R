@@ -5,7 +5,7 @@
 #' @return A list with the values for `py_path`, `py_cmd`, and `venv_activate_cmd`.
 get_python_info <- function() {
   os = Sys.info()[["sysname"]]
-  py_cmd = ifelse(os == "Windows", "python", c("python3", "python3.7", "python3.8", "python3.9", "python3.10"))
+  py_cmd = ifelse(os == "Windows", "python", c("python3", "python3.9", "python3.10"))
   which_cmd = ifelse(os == "Windows", "where", "which")
   venv_activate_cmd = ifelse(os == "Windows", "Scripts", "bin")
 
@@ -33,7 +33,8 @@ get_python_info <- function() {
     }, error = function(e) {
       message(e$message)
     })
-    if (grepl("([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
+    #if (grepl("([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
+    if (grepl("3\\.([9-9]|1[0-9])\\.", py_version)) {
       py_path = path
       py_version = py_version
       message("Using Python version: ", py_version)
