@@ -33,7 +33,7 @@ get_python_info <- function() {
     }, error = function(e) {
       message(e$message)
     })
-    if (grepl("([3].[7-9][0-9]?.*|3.10.*)", py_version)) {
+    if (grepl("([3].[9-9][0-9]?.*|3.10.*)", py_version)) {
     #if (grepl("3\\.([9-9]|1[0-9])\\.", py_version)) {
       py_path = path
       py_version = py_version
@@ -41,5 +41,5 @@ get_python_info <- function() {
       return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd, os = os))
     }
   }
-  warning("Please install Python 3.7 - 3.10 or ensure that Python is in PATH!")
+  warning("Please install Python 3.9 or later or ensure that Python is in PATH!")
 }
