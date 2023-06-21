@@ -33,7 +33,7 @@ get_python_info <- function() {
     }, error = function(e) {
       message(e$message)
     })
-    if (grepl("([3].[9-9][0-9]?.*|3.10.*)", py_version)) {
+    if (grepl("^3\\.[1-9][0-9]+\\..*", py_version)) {
     #if (grepl("3\\.([9-9]|1[0-9])\\.", py_version)) {
       py_path = path
       py_version = py_version
