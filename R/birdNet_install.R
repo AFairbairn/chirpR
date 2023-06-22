@@ -33,7 +33,11 @@ birdNet.install <- function(path, ...) {
     message("Getting BirdNet...")
     # Download BirdNet analyzer
     file = file.path(downloadPath, "BirdNET-Analyzer.zip")
-    value = download.file("https://github.com/kahst/BirdNET-Analyzer/archive/refs/heads/main.zip",
+    #ToDo latest version
+    # value = download.file("https://github.com/kahst/BirdNET-Analyzer/archive/refs/heads/main.zip",
+    #                       file, ...)
+    # Temp fix
+    value = download.file("https://github.com/AFairbairn/BirdNET-Analyzer/archive/refs/heads/main.zip",
                           file, ...)
     message(paste0("Download completed with exit code: ", value))
     unzip(zipfile = file, exdir=downloadPath)

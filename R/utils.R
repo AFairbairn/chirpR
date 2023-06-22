@@ -33,6 +33,7 @@ get_python_info <- function() {
     }, error = function(e) {
       message(e$message)
     })
+    # ToDo Python 3.9 or higher
     if (grepl("^Python\\s3\\.[1-8][0-9]+\\..*", py_version)) {
     #if (grepl("3\\.([9-9]|1[0-9])\\.", py_version)) {
       py_path = path
