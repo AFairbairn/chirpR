@@ -34,7 +34,7 @@ get_python_info <- function() {
       message(e$message)
     })
     # ToDo Python 3.9 or higher
-    if (grepl("^Python\\s3\\.[1-8][0-9]+\\..*", py_version)) {
+    if (grepl("^Python\\s3\\.[8]+\\..*", py_version)) {
     #if (grepl("3\\.([9-9]|1[0-9])\\.", py_version)) {
       py_path = path
       py_version = py_version
@@ -42,5 +42,5 @@ get_python_info <- function() {
       return(list(py_path = py_path, py_cmd = py_cmd, venv_activate_cmd = venv_activate_cmd))
     }
   }
-  warning("Please install Python 3.8 or later or ensure that Python is in PATH!")
+  warning("Please install Python 3.8 or ensure that Python is in PATH!")
 }
