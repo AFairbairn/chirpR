@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+suppressWarnings(suppressPackageStartupMessages(library(badger)))
 ```
 
 # chirpR: Tools for Analyzing and Handling BirdNET Analyse Results
@@ -54,8 +55,11 @@ Fairbairn A (2025). _chirpR: Tools for Analyzing and Handling BirdNET Analyze Re
 Developed by 🦜Andrew J. Fairbairn
 
 Current affiliations:
+
 [RARElab](https://www.rarelab.org/)
+
 [Chair for Terrestrial Ecology](https://www3.ls.tum.de/en/toek/home/), Technical University of Munich
+
 
 [Homepage](https://afairbairn.com/)
 
