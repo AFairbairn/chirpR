@@ -18,7 +18,6 @@
 #' @param seed Integer. Random seed for reproducible sampling (default: NULL)
 #' @param min_conf Numeric. Minimum confidence threshold to include (default: 0.1)
 #' @param max_conf Numeric. Maximum confidence threshold to include (default: 1.0)
-#' @param warn_insufficient Logical. If TRUE, warn when requested samples exceed available data (default: TRUE)
 #' @param verbose Logical. If TRUE, show progress messages during processing (default: FALSE)
 #' @param ... Additional arguments passed to create_validation_data()
 #'

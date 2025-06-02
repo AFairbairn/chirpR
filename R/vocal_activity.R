@@ -2,8 +2,7 @@
 #'
 #' This function calculates vocal activity rates using different methods and time intervals.
 #' VAR represents the rate of vocal detections per unit time, calculated per species.
-#' If site information is provided, results can be returned both by species overall
-#' and by species per site.
+#' Results are returned by species and site (if site_col is provided).
 #'
 #' @param df A dataframe containing bird detection data.
 #' @param method Character string specifying VAR calculation method:
@@ -17,67 +16,62 @@
 #'   "hour", "day". Default is "minute".
 #' @param time_col Character string specifying the column name containing detection time.
 #'   This should be the actual time when the detection occurred (not start time + offset).
+#'   Default is "timestamp".
 #' @param date_col Character string specifying the date column name (if separate from time_col).
+#'   Default is "date".
 #' @param species_col Character string specifying the species column name. Default is "scientific_name".
-#' @param site_col Character string specifying the site column name (optional).
-#'   If provided, results will include both overall and by-site summaries.
-#' @param recording_days_col Character string specifying column with total recording days (optional).
+#' @param site_col Character string specifying the site column name. Default is "site".
+#'   If this column exists in the data, results will include site information.
+#' @param recording_length_col Character string specifying column with total recording days (optional).
+#'   Default is "recording_length".
 #' @param time_format Character string specifying time format if time_col needs parsing.
-#'   Common formats: "%H:%M:%S", "%H%M%S", "%Y-%m-%d %H:%M:%S".
-#' @param return_by_site Logical. If TRUE and site_col is provided, return results by site
-#'   in addition to overall species results. Default is FALSE.
-#' @return If return_by_site is FALSE or site_col is NULL: A dataframe with VAR by species.
-#'   If return_by_site is TRUE and site_col is provided: A list with two elements:
-#'   \itemize{
-#'     \item by_species: VAR summarized across all sites per species
-#'     \item by_site: VAR calculated separately for each site-species combination
-#'   }
+#'   Common formats: "%H:%M:%S", "%H%M%S", "%Y-%m-%d %H:%M:%S". Default is NULL (auto-detect).
+#' @return A dataframe with VAR results. Columns will include the species column,
+#'   site column (if provided), number of detections, days recorded, and calculated VAR.
+#'   Results are ordered by species name.
 #' @export
-#' @importFrom data.table setDT copy
-#' @importFrom lubridate ymd hms floor_date
+#' @importFrom data.table setDT copy uniqueN first
+#' @importFrom lubridate ymd floor_date
 #' @examples
 #' \dontrun{
-#' # Basic usage - species-level VAR only
-#' var_result <- vocal_activity(df, species_col = "scientificName")
+#' # Basic usage - species-level VAR with default parameters
+#' var_result <- vocal_activity(df)
 #'
-#' # With 15-minute intervals (matching your original approach)
+#' # With 15-minute intervals and custom column names
 #' var_result <- vocal_activity(df,
-#'                                       method = "interval_deduplication",
-#'                                       interval_unit = "15 minutes",
-#'                                       time_col = "detection_time",  # Pre-calculated time
-#'                                       species_col = "scientific_name",
-#'                                       site_col = "site",
-#'                                       recording_days_col = "days_recorded",
-#'                                       return_by_site = TRUE)
+#'                             method = "interval_deduplication",
+#'                             interval_unit = "15 minutes",
+#'                             time_col = "detection_time",
+#'                             species_col = "scientific_name",
+#'                             site_col = "site",
+#'                             recording_length_col = "days_recorded")
 #'
-#' # Access results
-#' overall_var <- var_result$by_species
-#' site_var <- var_result$by_site
-#'
-#' # Different data format with combined datetime
+#' # Different method with combined datetime column
 #' var_result <- vocal_activity(df,
-#'                                       method = "total_detections",
-#'                                       time_col = "detection_datetime",
-#'                                       species_col = "species")
+#'                             method = "total_detections",
+#'                             time_col = "detection_datetime",
+#'                             species_col = "species",
+#'                             date_col = NULL)  # No separate date column
+#'
+#' # Daily average method
+#' var_result <- vocal_activity(df,
+#'                             method = "detections_per_day",
+#'                             species_col = "common_name")
 #' }
 vocal_activity <- function(df,
                            method = "interval_deduplication",
                            interval_unit = "minute",
-                           time_col = "time",
+                           time_col = "timestamp",
                            date_col = "date",
                            species_col = "scientific_name",
-                           site_col = NULL,
-                           recording_days_col = NULL,
-                           time_format = NULL,
-                           return_by_site = FALSE) {
+                           site_col = "site",
+                           recording_length_col = "recording_length",
+                           time_format = NULL) {
 
+  #--------------------------------------------------------------------------- #
   # Input validation
   if (!is.data.frame(df)) {
     stop("df must be a data.frame")
-  }
-
-  if (nrow(df) == 0) {
-    stop("Input dataframe is empty")
   }
 
   # Check required columns exist
@@ -95,12 +89,7 @@ vocal_activity <- function(df,
     stop(paste("Invalid method. Choose from:", paste(valid_methods, collapse = ", ")))
   }
 
-  # Validate interval_unit
-  valid_intervals <- c("minute", "15 minutes", "hour", "day")
-  if (!interval_unit %in% valid_intervals) {
-    stop(paste("Invalid interval_unit. Choose from:", paste(valid_intervals, collapse = ", ")))
-  }
-
+  #--------------------------------------------------------------------------- #
   # Work with a copy to avoid modifying original data
   dt <- data.table::setDT(data.table::copy(df))
 
@@ -148,6 +137,7 @@ vocal_activity <- function(df,
     }
   }
 
+  #--------------------------------------------------------------------------- #
   # Create detection intervals
   dt$detection_interval <- lubridate::floor_date(dt$detection_time, unit = interval_unit)
 
@@ -158,10 +148,10 @@ vocal_activity <- function(df,
       dedup_cols <- c(group_cols, "detection_interval")
       data_unique <- unique(data, by = dedup_cols)
 
-      if (!is.null(recording_days_col) && recording_days_col %in% names(data)) {
+      if (!is.null(recording_length_col) && recording_length_col %in% names(data)) {
         # Use provided recording days
         var_result <- data_unique[, .(detections = .N), by = group_cols][
-          data[, .(days_recorded = data.table::first(get(recording_days_col))),
+          data[, .(days_recorded = data.table::first(get(recording_length_col))),
                by = group_cols],
           on = group_cols][
             , var := detections / days_recorded]
@@ -176,9 +166,9 @@ vocal_activity <- function(df,
 
     } else if (method == "total_detections") {
       # Use all detections without deduplication
-      if (!is.null(recording_days_col) && recording_days_col %in% names(data)) {
+      if (!is.null(recording_length_col) && recording_length_col %in% names(data)) {
         var_result <- data[, .(detections = .N), by = group_cols][
-          data[, .(days_recorded = data.table::first(get(recording_days_col))),
+          data[, .(days_recorded = data.table::first(get(recording_length_col))),
                by = group_cols],
           on = group_cols][
             , var := detections / days_recorded]
@@ -202,41 +192,12 @@ vocal_activity <- function(df,
   }
 
   # Calculate VAR by species (overall)
-  var_by_species <- calculate_var_helper(dt, species_col)
+  var_by_species <- calculate_var_helper(dt, c(site_col, species_col))
 
-  # Calculate VAR by site if requested
-  results <- list()
+  var_by_species <- as.data.frame(var_by_species)
+  var_by_species <- var_by_species[order(var_by_species[[species_col]]), ]
+  rownames(var_by_species) <- NULL
 
-  if (!is.null(site_col) && return_by_site) {
-    var_by_site <- calculate_var_helper(dt, c(site_col, species_col))
+  return(var_by_species)
 
-    # Convert to data.frames and clean up
-    var_by_species <- as.data.frame(var_by_species)
-    var_by_site <- as.data.frame(var_by_site)
-
-    # Round VAR to reasonable precision
-    var_by_species$var <- round(var_by_species$var, 4)
-    var_by_site$var <- round(var_by_site$var, 4)
-
-    # Sort results
-    var_by_species <- var_by_species[order(var_by_species[[species_col]]), ]
-    var_by_site <- var_by_site[order(var_by_site[[site_col]], var_by_site[[species_col]]), ]
-
-    rownames(var_by_species) <- NULL
-    rownames(var_by_site) <- NULL
-
-    results$by_species <- var_by_species
-    results$by_site <- var_by_site
-
-    return(results)
-
-  } else {
-    # Return only species-level results
-    var_by_species <- as.data.frame(var_by_species)
-    var_by_species$var <- round(var_by_species$var, 4)
-    var_by_species <- var_by_species[order(var_by_species[[species_col]]), ]
-    rownames(var_by_species) <- NULL
-
-    return(var_by_species)
-  }
 }
