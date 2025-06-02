@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+    #> Warning: package 'badger' was built under R version 4.4.3
+
 [![](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R build
 status](https://github.com/Afairbairn/chirpR/workflows/R-CMD-check/badge.svg)](https://github.com/Afairbairn/chirpR/actions)
@@ -113,12 +115,11 @@ speech libraries for different languages below. This is not an
 exhaustive list and I would appreciate submission of additional
 resources. Just contact me!
 
--   English
-    -   [LibriSpeech ASR corpus](https://www.openslr.org/12/)
--   German
-    -   [LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
-    -   [LibriVox MP3
-        bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
--   Multilingual
-    -   [Mozilla common
-        voice](https://commonvoice.mozilla.org/en/datasets)
+- English
+  - [LibriSpeech ASR corpus](https://www.openslr.org/12/)
+- German
+  - [LibriVoxDeEn](https://www.cl.uni-heidelberg.de/statnlpgroup/librivoxdeen/)
+  - [LibriVox MP3
+    bundle](https://www.ce.cit.tum.de/mmk/verschiedenes/german-speech-corpus-aligned-with-ctc-segmentation/)
+- Multilingual
+  - [Mozilla common voice](https://commonvoice.mozilla.org/en/datasets)

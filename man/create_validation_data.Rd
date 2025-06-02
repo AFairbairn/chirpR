@@ -5,18 +5,18 @@
 \title{Create Validation Data from Detection List}
 \usage{
 create_validation_data(
-  detection_list,
+  birdnet_results,
   output_dir,
   padding = 2,
   duration = 3,
   input_format = "auto",
-  output_format = "kaleidoscope",
-  file_path_col = "file_path",
+  output_format = "auto",
+  file_path_col = "filepath",
   start_time_col = "start_time"
 )
 }
 \arguments{
-\item{detection_list}{Character. Path to the detection list CSV file}
+\item{birdnet_results}{Character. Path to the BirdNET results CSV file; usually a filtered file including only the detections to be validated.}
 
 \item{output_dir}{Character. Output directory for WAV files and new CSV}
 
@@ -24,13 +24,13 @@ create_validation_data(
 
 \item{duration}{Numeric. Duration of each clip in seconds (default: 3)}
 
-\item{input_format}{Character. Format of input data, Same as BirdNET output. Options: "table", "audacity", "kaleidoscope", "csv", "auto" (default: "auto")}
+\item{input_format}{Character. Format of input data. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")}
 
-\item{output_format}{Character. Format of output CSV. Same as BirdNET output. You can convert between formats here. Options: "table", "audacity", "kaleidoscope", "csv", "auto" (default: "auto")}
+\item{output_format}{Character. Format of output CSV. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")}
 
-\item{file_path_col}{Character. Column name for file paths when input_format = "simple" (default: "file_path")}
+\item{file_path_col}{Character. Column name for file paths when input_format = "csv" (default: "filepath")}
 
-\item{start_time_col}{Character. Column name for start times when input_format = "simple" (default: "start_time")}
+\item{start_time_col}{Character. Column name for start times when input_format = "csv" (default: "start_time")}
 }
 \value{
 Invisibly returns the path to the created validation CSV file
@@ -38,47 +38,48 @@ Invisibly returns the path to the created validation CSV file
 \description{
 This function processes detection data in various formats and creates audio clips
 for validation purposes. It supports multiple input formats and output formats
-for compatibility with different software packages.
+for compatibility with different software packages including BirdNET-Analyzer formats.
 }
 \details{
-\strong{Input Formats:}
+\strong{Input Formats (BirdNET-Analyzer compatible):}
 \itemize{
-\item "kaleidoscope": Expects columns INDIR, FOLDER, IN FILE, OFFSET (and optionally site, common_name, confidence, scientific_name)
-\item "simple": Expects a file path column and start time column (customizable names)
+\item "table": BirdNET table format with columns: filepath, start_time, end_time, common_name, confidence
+\item "audacity": Audacity labels format with columns: filepath, start_time, end_time, common_name
+\item "kaleidoscope": Kaleidoscope format with columns: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
+\item "csv": Generic CSV format with customizable column names
 \item "auto": Automatically detects format based on available columns
 }
 
 \strong{Output Formats:}
 \itemize{
-\item "kaleidoscope": Compatible with Kaleidoscope software format
-\item "audacity": Creates labels file format for Audacity (file_path, start_time, end_time, label)
-\item "raven": Compatible with Raven Pro software (Begin Time, End Time, Begin File, etc.)
-\item "simple": Basic format (file_path, start_time, duration)
+\item "table": BirdNET table format
+\item "audacity": Audacity labels format
+\item "kaleidoscope": Kaleidoscope format
+\item "csv": Generic CSV format
 }
 }
 \examples{
 \dontrun{
-# Kaleidoscope format input and output
+# BirdNET table format input and output
 create_validation_data(
-  detection_list = "kaleidoscope_detections.csv",
-  output_dir = "validation_output"
-)
-
-# Simple format input with custom column names
-create_validation_data(
-  detection_list = "simple_detections.csv",
+  birdnet_results = "birdnet_detections.csv",
   output_dir = "validation_output",
-  input_format = "simple",
-  output_format = "audacity",
-  file_path_col = "audio_file",
-  start_time_col = "detection_time"
+  input_format = "table",
+  output_format = "table"
 )
 
-# Auto-detect input, output for Raven Pro
+# Kaleidoscope format input, Audacity output
 create_validation_data(
-  detection_list = "detections.csv",
-  output_dir = "raven_output",
-  output_format = "raven"
+  birdnet_results = "kaleidoscope_detections.csv",
+  output_dir = "validation_output",
+  input_format = "kaleidoscope",
+  output_format = "audacity"
+)
+
+# Auto-detect input format
+create_validation_data(
+  birdnet_results = "detections.csv",
+  output_dir = "validation_output"
 )
 }
 

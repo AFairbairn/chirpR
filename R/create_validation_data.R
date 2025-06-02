@@ -2,84 +2,77 @@
 #'
 #' This function processes detection data in various formats and creates audio clips
 #' for validation purposes. It supports multiple input formats and output formats
-#' for compatibility with different software packages.
+#' for compatibility with different software packages including BirdNET-Analyzer formats.
 #'
-#' @param detection_list Character. Path to the detection list CSV file
+#' @param birdnet_results Character. Path to the BirdNET results CSV file; usually a filtered file including only the detections to be validated.
 #' @param output_dir Character. Output directory for WAV files and new CSV
 #' @param padding Numeric. Padding (seconds) to add to either side of the cut (default: 2)
 #' @param duration Numeric. Duration of each clip in seconds (default: 3)
-#' @param input_format Character. Format of input data, Same as BirdNET output. Options: "table", "audacity", "kaleidoscope", "csv", "auto" (default: "auto")
-#' @param output_format Character. Format of output CSV. Same as BirdNET output. You can convert between formats here. Options: "table", "audacity", "kaleidoscope", "csv", "auto" (default: "auto")
-#' @param file_path_col Character. Column name for file paths when input_format = "simple" (default: "file_path")
-#' @param start_time_col Character. Column name for start times when input_format = "simple" (default: "start_time")
+#' @param input_format Character. Format of input data. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")
+#' @param output_format Character. Format of output CSV. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")
+#' @param file_path_col Character. Column name for file paths when input_format = "csv" (default: "filepath")
+#' @param start_time_col Character. Column name for start times when input_format = "csv" (default: "start_time")
 #'
 #' @return Invisibly returns the path to the created validation CSV file
 #'
 #' @details
-#' **Input Formats:**
-#' - "kaleidoscope": Expects columns INDIR, FOLDER, IN FILE, OFFSET (and optionally site, common_name, confidence, scientific_name)
-#' - "simple": Expects a file path column and start time column (customizable names)
+#' **Input Formats (BirdNET-Analyzer compatible):**
+#' - "table": BirdNET table format with columns: filepath, start_time, end_time, common_name, confidence
+#' - "audacity": Audacity labels format with columns: filepath, start_time, end_time, common_name
+#' - "kaleidoscope": Kaleidoscope format with columns: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
+#' - "csv": Generic CSV format with customizable column names
 #' - "auto": Automatically detects format based on available columns
 #'
 #' **Output Formats:**
-#' - "kaleidoscope": Compatible with Kaleidoscope software format
-#' - "audacity": Creates labels file format for Audacity (file_path, start_time, end_time, label)
-#' - "raven": Compatible with Raven Pro software (Begin Time, End Time, Begin File, etc.)
-#' - "simple": Basic format (file_path, start_time, duration)
+#' - "table": BirdNET table format
+#' - "audacity": Audacity labels format
+#' - "kaleidoscope": Kaleidoscope format
+#' - "csv": Generic CSV format
 #'
 #' @examples
 #' \dontrun{
-#' # Kaleidoscope format input and output
+#' # BirdNET table format input and output
 #' create_validation_data(
-#'   detection_list = "kaleidoscope_detections.csv",
-#'   output_dir = "validation_output"
-#' )
-#'
-#' # Simple format input with custom column names
-#' create_validation_data(
-#'   detection_list = "simple_detections.csv",
+#'   birdnet_results = "birdnet_detections.csv",
 #'   output_dir = "validation_output",
-#'   input_format = "simple",
-#'   output_format = "audacity",
-#'   file_path_col = "audio_file",
-#'   start_time_col = "detection_time"
+#'   input_format = "table",
+#'   output_format = "table"
 #' )
 #'
-#' # Auto-detect input, output for Raven Pro
+#' # Kaleidoscope format input, Audacity output
 #' create_validation_data(
-#'   detection_list = "detections.csv",
-#'   output_dir = "raven_output",
-#'   output_format = "raven"
+#'   birdnet_results = "kaleidoscope_detections.csv",
+#'   output_dir = "validation_output",
+#'   input_format = "kaleidoscope",
+#'   output_format = "audacity"
+#' )
+#'
+#' # Auto-detect input format
+#' create_validation_data(
+#'   birdnet_results = "detections.csv",
+#'   output_dir = "validation_output"
 #' )
 #' }
 #'
 #' @export
-create_validation_data <- function(detection_list,
+#' @importFrom tuneR readWave Wave writeWave
+create_validation_data <- function(birdnet_results,
                                    output_dir,
                                    padding = 2,
                                    duration = 3,
                                    input_format = "auto",
-                                   output_format = "kaleidoscope",
-                                   file_path_col = "file_path",
+                                   output_format = "auto",
+                                   file_path_col = "filepath",
                                    start_time_col = "start_time") {
-
-  # Check for required packages
-  required_packages <- c("tuneR", "readr", "dplyr")
-  missing_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
 
   if (length(missing_packages) > 0) {
     stop(paste("Required packages not available:", paste(missing_packages, collapse = ", "),
                "\nPlease install with: install.packages(c('", paste(missing_packages, collapse = "', '"), "'))", sep = ""))
   }
 
-  # Load required libraries
-  library(tuneR)
-  library(readr)
-  library(dplyr)
-
   # Validate inputs
-  if (!file.exists(detection_list)) {
-    stop("Detection list file does not exist: ", detection_list)
+  if (!file.exists(birdnet_results)) {
+    stop("Detection list file does not exist: ", birdnet_results)
   }
 
   if (!is.numeric(padding) || padding < 0) {
@@ -90,8 +83,8 @@ create_validation_data <- function(detection_list,
     stop("Duration must be a positive number")
   }
 
-  valid_input_formats <- c("kaleidoscope", "simple", "auto")
-  valid_output_formats <- c("kaleidoscope", "audacity", "raven", "simple")
+  valid_input_formats <- c("table", "audacity", "kaleidoscope", "csv", "auto")
+  valid_output_formats <- c("table", "audacity", "kaleidoscope", "csv", "auto")
 
   if (!input_format %in% valid_input_formats) {
     stop("Invalid input_format. Must be one of: ", paste(valid_input_formats, collapse = ", "))
@@ -114,47 +107,89 @@ create_validation_data <- function(detection_list,
 
   # Read detection list
   cat("Reading detection list...\n")
-  df <- readr::read_csv(detection_list, show_col_types = FALSE)
+  df <- read.csv(birdnet_results, stringsAsFactors = FALSE)
 
   # Detect input format if auto
   if (input_format == "auto") {
+    # BirdNET table format
+    table_cols <- c("filepath", "start_time", "end_time", "common_name", "confidence")
+    # Audacity format
+    audacity_cols <- c("filepath", "start_time", "end_time", "common_name")
+    # Kaleidoscope format
     kaleidoscope_cols <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
-    if (all(kaleidoscope_cols %in% names(df))) {
+
+    if (all(table_cols %in% names(df))) {
+      input_format <- "table"
+      cat("Auto-detected input format: table (BirdNET)\n")
+    } else if (all(audacity_cols %in% names(df))) {
+      input_format <- "audacity"
+      cat("Auto-detected input format: audacity\n")
+    } else if (all(kaleidoscope_cols %in% names(df))) {
       input_format <- "kaleidoscope"
       cat("Auto-detected input format: kaleidoscope\n")
     } else if (file_path_col %in% names(df) && start_time_col %in% names(df)) {
-      input_format <- "simple"
-      cat("Auto-detected input format: simple\n")
+      input_format <- "csv"
+      cat("Auto-detected input format: csv\n")
     } else {
-      stop("Could not auto-detect input format. Please specify input_format manually.\n",
-           "For kaleidoscope format, need columns: ", paste(kaleidoscope_cols, collapse = ", "), "\n",
-           "For simple format, need columns: ", file_path_col, ", ", start_time_col)
+      stop("Could not auto-detect input format. Available columns: ", paste(names(df), collapse = ", "),
+           "\nPlease specify input_format manually.")
     }
   }
 
+  # Auto-detect output format if not specified
+  if (output_format == "auto") {
+    output_format <- input_format
+    if (output_format == "csv") output_format <- "table"  # Default csv to table format
+    cat("Auto-detected output format:", output_format, "\n")
+  }
+
   # Standardize input data to common format
-  if (input_format == "kaleidoscope") {
+  if (input_format == "table") {
+    # BirdNET table format: filepath, start_time, end_time, common_name, confidence
+    required_cols <- c("filepath", "start_time", "end_time", "common_name", "confidence")
+    missing_cols <- required_cols[!required_cols %in% names(df)]
+    if (length(missing_cols) > 0) {
+      stop("Missing required columns for table format: ", paste(missing_cols, collapse = ", "))
+    }
+    df$full_path <- df$filepath
+    df$detection_start <- df$start_time
+
+  } else if (input_format == "audacity") {
+    # Audacity format: filepath, start_time, end_time, common_name
+    required_cols <- c("filepath", "start_time", "end_time", "common_name")
+    missing_cols <- required_cols[!required_cols %in% names(df)]
+    if (length(missing_cols) > 0) {
+      stop("Missing required columns for audacity format: ", paste(missing_cols, collapse = ", "))
+    }
+    df$full_path <- df$filepath
+    df$detection_start <- df$start_time
+    if (!"confidence" %in% names(df)) df$confidence <- NA
+
+  } else if (input_format == "kaleidoscope") {
+    # Kaleidoscope format: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
     required_cols <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
     missing_cols <- required_cols[!required_cols %in% names(df)]
     if (length(missing_cols) > 0) {
       stop("Missing required columns for kaleidoscope format: ", paste(missing_cols, collapse = ", "))
     }
-
-    # Standardize to common format
     df$full_path <- file.path(df$INDIR, df$FOLDER, df$`IN FILE`)
-    df$start_time <- df$OFFSET
+    df$detection_start <- df$OFFSET
+    if (!"MANUAL ID" %in% names(df)) df$`MANUAL ID` <- ""
+    df$common_name <- df$`MANUAL ID`
+    if (!"confidence" %in% names(df)) df$confidence <- NA
 
-  } else if (input_format == "simple") {
+  } else if (input_format == "csv") {
+    # Generic CSV format with user-specified columns
     if (!file_path_col %in% names(df)) {
       stop("File path column '", file_path_col, "' not found in data")
     }
     if (!start_time_col %in% names(df)) {
       stop("Start time column '", start_time_col, "' not found in data")
     }
-
-    # Standardize to common format
     df$full_path <- df[[file_path_col]]
-    df$start_time <- df[[start_time_col]]
+    df$detection_start <- df[[start_time_col]]
+    if (!"common_name" %in% names(df)) df$common_name <- "Unknown"
+    if (!"confidence" %in% names(df)) df$confidence <- NA
   }
 
   # Add unique_id column
@@ -170,13 +205,13 @@ create_validation_data <- function(detection_list,
         return(NULL)
       }
 
-      # Read the WAV file
+      # Read the WAV file using tuneR
       wav_file <- tuneR::readWave(wav_path)
       sample_rate <- wav_file@samp.rate
 
       # Calculate start and end times
-      start_time <- max(0, row_data$start_time - padding)
-      end_time <- row_data$start_time + duration + padding
+      start_time <- max(0, row_data$detection_start - padding)
+      end_time <- row_data$detection_start + duration + padding
 
       start_sample <- max(1, round(start_time * sample_rate))
       end_sample <- min(length(wav_file@left), round(end_time * sample_rate))
@@ -207,19 +242,12 @@ create_validation_data <- function(detection_list,
         original_dir = dirname(row_data$full_path),
         new_file_path = new_wav_path,
         new_file_name = new_wav_name,
-        original_start_time = row_data$start_time,
+        original_start_time = row_data$detection_start,
         clip_duration = duration + 2 * padding,
-        padding_used = padding
+        padding_used = padding,
+        common_name = if("common_name" %in% names(row_data)) row_data$common_name else "Unknown",
+        confidence = if("confidence" %in% names(row_data)) row_data$confidence else NA
       )
-
-      # Add optional fields if they exist
-      optional_fields <- c("site", "common_name", "confidence", "scientific_name",
-                           "species", "label", "score")
-      for (field in optional_fields) {
-        if (field %in% names(row_data)) {
-          result[[field]] <- row_data[[field]]
-        }
-      }
 
       return(result)
 
@@ -253,83 +281,69 @@ create_validation_data <- function(detection_list,
     data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   }))
 
-  # Create output format
-  if (output_format == "kaleidoscope") {
+  # Create output format based on BirdNET specifications
+  if (output_format == "table") {
+    # BirdNET table format
     out_df <- data.frame(
-      site = ifelse("site" %in% names(results_df), results_df$site, ""),
+      filepath = results_df$new_file_path,
+      start_time = 0,
+      end_time = results_df$clip_duration,
+      common_name = results_df$common_name,
+      confidence = results_df$confidence,
+      stringsAsFactors = FALSE
+    )
+    output_filename <- "validation_table.csv"
+
+  } else if (output_format == "audacity") {
+    # Audacity format
+    out_df <- data.frame(
+      filepath = results_df$new_file_path,
+      start_time = 0,
+      end_time = results_df$clip_duration,
+      common_name = results_df$common_name,
+      stringsAsFactors = FALSE
+    )
+    output_filename <- "validation_audacity.txt"
+
+  } else if (output_format == "kaleidoscope") {
+    # Kaleidoscope format
+    out_df <- data.frame(
       INDIR = ".",
       FOLDER = "wav_files",
       `IN FILE` = results_df$new_file_name,
       OFFSET = 0,
       DURATION = results_df$clip_duration,
-      `MANUAL ID` = ifelse("common_name" %in% names(results_df), results_df$common_name,
-                           ifelse("species" %in% names(results_df), results_df$species, "")),
-      confidence = ifelse("confidence" %in% names(results_df), results_df$confidence,
-                          ifelse("score" %in% names(results_df), results_df$score, "")),
-      scientific_name = ifelse("scientific_name" %in% names(results_df), results_df$scientific_name, ""),
+      `MANUAL ID` = results_df$common_name,
       stringsAsFactors = FALSE,
       check.names = FALSE
     )
-    output_filename <- "validation_list.csv"
+    output_filename <- "validation_kaleidoscope.csv"
 
-  } else if (output_format == "audacity") {
+  } else if (output_format == "csv") {
+    # Generic CSV format
     out_df <- data.frame(
-      file_path = results_df$new_file_path,
-      start_time = 0,
-      end_time = results_df$clip_duration,
-      label = ifelse("common_name" %in% names(results_df), results_df$common_name,
-                     ifelse("species" %in% names(results_df), results_df$species,
-                            ifelse("label" %in% names(results_df), results_df$label, "detection"))),
-      stringsAsFactors = FALSE
-    )
-    output_filename <- "audacity_labels.txt"
-
-  } else if (output_format == "raven") {
-    out_df <- data.frame(
-      Selection = seq_len(nrow(results_df)),
-      View = "Spectrogram 1",
-      Channel = 1,
-      `Begin Time (s)` = 0,
-      `End Time (s)` = results_df$clip_duration,
-      `Low Freq (Hz)` = 0,
-      `High Freq (Hz)` = 22050,  # Will be updated based on actual file sample rate
-      `Begin File` = results_df$new_file_name,
-      `File Offset (s)` = 0,
-      Species = ifelse("common_name" %in% names(results_df), results_df$common_name,
-                       ifelse("species" %in% names(results_df), results_df$species, "")),
-      stringsAsFactors = FALSE,
-      check.names = FALSE
-    )
-    output_filename <- "raven_selections.txt"
-
-  } else if (output_format == "simple") {
-    out_df <- data.frame(
-      file_path = results_df$new_file_path,
+      filepath = results_df$new_file_path,
       start_time = 0,
       duration = results_df$clip_duration,
       original_file = results_df$original_file,
       original_start_time = results_df$original_start_time,
-      label = ifelse("common_name" %in% names(results_df), results_df$common_name,
-                     ifelse("species" %in% names(results_df), results_df$species,
-                            ifelse("label" %in% names(results_df), results_df$label, "detection"))),
+      common_name = results_df$common_name,
+      confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
-    output_filename <- "simple_validation.csv"
+    output_filename <- "validation_data.csv"
   }
 
   # Write output file
   out_csv_path <- file.path(output_dir, output_filename)
 
   if (output_format == "audacity") {
-    # Audacity labels format is tab-separated without headers
-    write.table(out_df[, c("start_time", "end_time", "label")],
-                out_csv_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
-  } else if (output_format == "raven") {
-    # Raven format is tab-separated
-    write.table(out_df, out_csv_path, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+    # Audacity format is tab-separated without headers
+    write.table(out_df[, c("start_time", "end_time", "common_name")],
+                       out_csv_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
   } else {
     # CSV format for others
-    readr::write_csv(out_df, out_csv_path)
+    write.csv(out_df, out_csv_path, row.names = FALSE)
   }
 
   cat("Successfully processed", nrow(results_df), "audio files\n")

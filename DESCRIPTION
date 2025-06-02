@@ -16,12 +16,8 @@ URL: https://github.com/AFairbairn/chirpR
 BugReports: https://github.com/AFairbairn/chirpR/issues
 Imports:
     data.table,
-    yaml,
     lubridate,
-    dplyr,
-    tidyr,
-    stringr,
-    ggplot2
+    tuneR
 Suggests:
     testthat,
     knitr,
