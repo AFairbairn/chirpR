@@ -1,14 +1,14 @@
 Package: chirpR
 Title: Tools for Analyzing and Handling BirdNET Analyze Results
-Version: 0.2.5
+Version: 0.1.0
 Authors@R: 
     person("Andrew J.", "Fairbairn", email = "andrew.fairbairn@tum.de",
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2826-3465"))
 Description: A collection of functions for analyzing results produced by BirdNET Analyze.
     These tools support a semi-automated analysis pipeline for ecoacoustic data,
-    facilitating tasks like preprocessing, summarizing detections, and calculating vocal activity rates.
-License: GPL (>= 3)
+    facilitating tasks like preprocessing, summarizing detections, and calculating diversity metrics.
+License: CC BY-SA 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -17,8 +17,9 @@ BugReports: https://github.com/AFairbairn/chirpR/issues
 Imports:
     data.table,
     lubridate,
-    tuneR
+    tuneR, 
+    vegan
 Suggests:
-    testthat,
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown
