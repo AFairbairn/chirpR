@@ -49,7 +49,7 @@
 #' @examples
 #' \dontrun{
 #' # Sample 50 detections per species across confidence range, create clips
-#' result <- sample_by_confidence(
+#' result <- sample_confidence(
 #'   birdnet_results = "birdnet_detections.csv",
 #'   n_samples = 50,
 #'   n_bins = 5,
@@ -58,7 +58,7 @@
 #' )
 #'
 #' # Sample specific species without resampling, no clips
-#' result <- sample_by_confidence(
+#' result <- sample_confidence(
 #'   birdnet_results = "detections.csv",
 #'   species = c("Turdus migratorius", "Corvus brachyrhynchos"),
 #'   n_samples = 100,
@@ -70,7 +70,7 @@
 #'
 #' @export
 #'
-sample_by_confidence <- function(birdnet_results,
+sample_confidence <- function(birdnet_results,
                                  n_samples = 100,
                                  n_bins = 10,
                                  resample = TRUE,

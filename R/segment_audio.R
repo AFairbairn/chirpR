@@ -32,7 +32,7 @@
 #' @examples
 #' \dontrun{
 #' # BirdNET table format input and output
-#' create_validation_data(
+#' segment_audio(
 #'   birdnet_results = "birdnet_detections.csv",
 #'   output_dir = "validation_output",
 #'   input_format = "table",
@@ -40,7 +40,7 @@
 #' )
 #'
 #' # Kaleidoscope format input, Audacity output
-#' create_validation_data(
+#' segment_audio(
 #'   birdnet_results = "kaleidoscope_detections.csv",
 #'   output_dir = "validation_output",
 #'   input_format = "kaleidoscope",
@@ -48,7 +48,7 @@
 #' )
 #'
 #' # Auto-detect input format
-#' create_validation_data(
+#' segment_audio(
 #'   birdnet_results = "detections.csv",
 #'   output_dir = "validation_output"
 #' )
@@ -56,7 +56,7 @@
 #'
 #' @export
 #' @importFrom tuneR readWave Wave writeWave
-create_validation_data <- function(birdnet_results,
+segment_audio <- function(birdnet_results,
                                    output_dir,
                                    padding = 2,
                                    duration = 3,
