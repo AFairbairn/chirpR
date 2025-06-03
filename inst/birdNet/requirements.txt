@@ -1,3 +1,0 @@
-tflite-runtime
-numpy
-librosa
