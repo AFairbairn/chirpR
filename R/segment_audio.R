@@ -65,11 +65,6 @@ segment_audio <- function(birdnet_results,
                           file_path_col = "filepath",
                           start_time_col = "start_time") {
 
-  if (length(missing_packages) > 0) {
-    stop(paste("Required packages not available:", paste(missing_packages, collapse = ", "),
-               "\nPlease install with: install.packages(c('", paste(missing_packages, collapse = "', '"), "'))", sep = ""))
-  }
-
   # Validate inputs
   if (!is.numeric(padding) || padding < 0) {
     stop("Padding must be a non-negative number")
