@@ -117,8 +117,9 @@ segment_audio <- function(birdnet_results,
     table_cols <- c("filepath", "start_time", "end_time", "common_name", "confidence")
     # Audacity format
     audacity_cols <- c("filepath", "start_time", "end_time", "common_name")
-    # Kaleidoscope format
-    kaleidoscope_cols <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
+    # Kaleidoscope format - handle both original and R-converted column names
+    kaleidoscope_cols_original <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
+    kaleidoscope_cols_r <- c("INDIR", "FOLDER", "IN.FILE", "OFFSET")
 
     if (all(table_cols %in% names(df))) {
       input_format <- "table"
@@ -126,7 +127,7 @@ segment_audio <- function(birdnet_results,
     } else if (all(audacity_cols %in% names(df))) {
       input_format <- "audacity"
       cat("Auto-detected input format: audacity\n")
-    } else if (all(kaleidoscope_cols %in% names(df))) {
+    } else if (all(kaleidoscope_cols_original %in% names(df)) || all(kaleidoscope_cols_r %in% names(df))) {
       input_format <- "kaleidoscope"
       cat("Auto-detected input format: kaleidoscope\n")
     } else if (file_path_col %in% names(df) && start_time_col %in% names(df)) {
@@ -169,16 +170,42 @@ segment_audio <- function(birdnet_results,
 
   } else if (input_format == "kaleidoscope") {
     # Kaleidoscope format: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
-    required_cols <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
-    missing_cols <- required_cols[!required_cols %in% names(df)]
+    # Handle both original column names and R-converted names (spaces become dots)
+    required_cols_original <- c("INDIR", "FOLDER", "IN FILE", "OFFSET")
+    required_cols_r <- c("INDIR", "FOLDER", "IN.FILE", "OFFSET")
+
+    # Check which format we have
+    if (all(required_cols_original %in% names(df))) {
+      # Original format with spaces
+      missing_cols <- required_cols_original[!required_cols_original %in% names(df)]
+      in_file_col <- "IN FILE"
+      manual_id_col <- "MANUAL ID"
+    } else if (all(required_cols_r %in% names(df))) {
+      # R-converted format with dots
+      missing_cols <- required_cols_r[!required_cols_r %in% names(df)]
+      in_file_col <- "IN.FILE"
+      manual_id_col <- "MANUAL.ID"
+    } else {
+      stop("Missing required columns for kaleidoscope format. Need either: ",
+           paste(required_cols_original, collapse = ", "), " OR ",
+           paste(required_cols_r, collapse = ", "))
+    }
+
     if (length(missing_cols) > 0) {
       stop("Missing required columns for kaleidoscope format: ", paste(missing_cols, collapse = ", "))
     }
-    # Construct full path from INDIR/FOLDER/IN FILE
-    df$full_path <- file.path(df$INDIR, df$FOLDER, df$`IN FILE`)
+
+    # Construct full path from INDIR/FOLDER/IN FILE (or IN.FILE)
+    df$full_path <- file.path(df$INDIR, df$FOLDER, df[[in_file_col]])
     df$detection_start <- df$OFFSET
-    if (!"MANUAL ID" %in% names(df)) df$`MANUAL ID` <- ""
-    df$common_name <- df$`MANUAL ID`
+
+    # Handle MANUAL ID column (might be MANUAL.ID)
+    if (manual_id_col %in% names(df)) {
+      df$common_name <- df[[manual_id_col]]
+    } else {
+      df$common_name <- ""
+    }
+
     if (!"confidence" %in% names(df)) df$confidence <- NA
 
   } else if (input_format == "csv") {
