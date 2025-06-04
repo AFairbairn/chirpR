@@ -4,7 +4,7 @@
 #' for validation purposes. It supports multiple input formats and output formats
 #' for compatibility with different software packages including BirdNET-Analyzer formats.
 #'
-#' @param birdnet_results Character. Path to the BirdNET results CSV file; usually a filtered file including only the detections to be validated.
+#' @param birdnet_results Character path to CSV file OR data.frame. Detection data to be processed.
 #' @param output_dir Character. Output directory for WAV files and new CSV
 #' @param padding Numeric. Padding (seconds) to add to either side of the cut (default: 2)
 #' @param duration Numeric. Duration of each clip in seconds (default: 3)
@@ -47,9 +47,9 @@
 #'   output_format = "audacity"
 #' )
 #'
-#' # Auto-detect input format
+#' # Auto-detect input format with dataframe input
 #' segment_audio(
-#'   birdnet_results = "detections.csv",
+#'   birdnet_results = my_detections_df,
 #'   output_dir = "validation_output"
 #' )
 #' }
@@ -57,13 +57,13 @@
 #' @export
 #' @importFrom tuneR readWave Wave writeWave
 segment_audio <- function(birdnet_results,
-                                   output_dir,
-                                   padding = 2,
-                                   duration = 3,
-                                   input_format = "auto",
-                                   output_format = "auto",
-                                   file_path_col = "filepath",
-                                   start_time_col = "start_time") {
+                          output_dir,
+                          padding = 2,
+                          duration = 3,
+                          input_format = "auto",
+                          output_format = "auto",
+                          file_path_col = "filepath",
+                          start_time_col = "start_time") {
 
   if (length(missing_packages) > 0) {
     stop(paste("Required packages not available:", paste(missing_packages, collapse = ", "),
@@ -71,10 +71,6 @@ segment_audio <- function(birdnet_results,
   }
 
   # Validate inputs
-  if (!file.exists(birdnet_results)) {
-    stop("Detection list file does not exist: ", birdnet_results)
-  }
-
   if (!is.numeric(padding) || padding < 0) {
     stop("Padding must be a non-negative number")
   }
@@ -105,9 +101,20 @@ segment_audio <- function(birdnet_results,
     dir.create(wav_output_dir, recursive = TRUE)
   }
 
-  # Read detection list
+  # Read detection list - handle both file path and dataframe input
   cat("Reading detection list...\n")
-  df <- read.csv(birdnet_results, stringsAsFactors = FALSE)
+  if (is.data.frame(birdnet_results)) {
+    df <- birdnet_results
+    cat("Using provided dataframe\n")
+  } else if (is.character(birdnet_results) && length(birdnet_results) == 1) {
+    if (!file.exists(birdnet_results)) {
+      stop("Detection list file does not exist: ", birdnet_results)
+    }
+    df <- read.csv(birdnet_results, stringsAsFactors = FALSE)
+    cat("Read CSV file:", birdnet_results, "\n")
+  } else {
+    stop("birdnet_results must be either a file path (character) or a data.frame")
+  }
 
   # Detect input format if auto
   if (input_format == "auto") {
@@ -172,6 +179,7 @@ segment_audio <- function(birdnet_results,
     if (length(missing_cols) > 0) {
       stop("Missing required columns for kaleidoscope format: ", paste(missing_cols, collapse = ", "))
     }
+    # Construct full path from INDIR/FOLDER/IN FILE
     df$full_path <- file.path(df$INDIR, df$FOLDER, df$`IN FILE`)
     df$detection_start <- df$OFFSET
     if (!"MANUAL ID" %in% names(df)) df$`MANUAL ID` <- ""
@@ -340,7 +348,7 @@ segment_audio <- function(birdnet_results,
   if (output_format == "audacity") {
     # Audacity format is tab-separated without headers
     write.table(out_df[, c("start_time", "end_time", "common_name")],
-                       out_csv_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+                out_csv_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
   } else {
     # CSV format for others
     write.csv(out_df, out_csv_path, row.names = FALSE)
