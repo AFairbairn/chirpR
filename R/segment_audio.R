@@ -276,6 +276,7 @@ segment_audio <- function(birdnet_results,
         clip_duration = duration + 2 * padding,
         padding_used = padding,
         common_name = if("common_name" %in% names(row_data)) row_data$common_name else "Unknown",
+        scientific_name = if("scientific_name" %in% names(row_data)) row_data$scientific_name else NA,
         confidence = if("confidence" %in% names(row_data)) row_data$confidence else NA
       )
 
@@ -319,6 +320,7 @@ segment_audio <- function(birdnet_results,
       start_time = 0,
       end_time = results_df$clip_duration,
       common_name = results_df$common_name,
+      scientific_name = results_df$scientific_name,
       confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
@@ -331,6 +333,8 @@ segment_audio <- function(birdnet_results,
       start_time = 0,
       end_time = results_df$clip_duration,
       common_name = results_df$common_name,
+      scientific_name = results_df$scientific_name,
+      confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
     output_filename <- "validation_audacity.txt"
@@ -344,6 +348,8 @@ segment_audio <- function(birdnet_results,
       OFFSET = 0,
       DURATION = results_df$clip_duration,
       `MANUAL ID` = results_df$common_name,
+      `SCIENTIFIC NAME` = results_df$scientific_name,
+      CONFIDENCE = results_df$confidence,
       stringsAsFactors = FALSE,
       check.names = FALSE
     )
@@ -358,6 +364,7 @@ segment_audio <- function(birdnet_results,
       original_file = results_df$original_file,
       original_start_time = results_df$original_start_time,
       common_name = results_df$common_name,
+      scientific_name = results_df$scientific_name,
       confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
