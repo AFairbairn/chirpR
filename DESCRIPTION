@@ -5,6 +5,7 @@ Authors@R:
     person("Andrew J.", "Fairbairn", email = "andrew.fairbairn@tum.de",
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2826-3465"))
+Date: 2025-06-05
 Description: A collection of functions for analyzing results produced by BirdNET Analyze.
     These tools support a semi-automated analysis pipeline for ecoacoustic data,
     facilitating tasks like preprocessing, and calculating diversity metrics.

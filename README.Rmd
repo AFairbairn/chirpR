@@ -38,14 +38,14 @@ cat(
 `chirpR` is an R package that simplifies the process of preparing, analyzing and interpreting [BirdNET](https://github.com/birdnet-team/BirdNET-Analyzer) results.
 
 ### Citation
-Fairbairn A (2025). _chirpR: Tools for Analyzing and Handling BirdNET Analyze Results_. R package version 0.2.5, <https://github.com/AFairbairn/chirpR>
+Fairbairn A (2025). _chirpR: Tools for Analyzing and Handling BirdNET Analyze Results_. R package version 0.1.0, <https://github.com/AFairbairn/chirpR>
 
 ```
- @Manual{,
+  @Manual{,
     title = {chirpR: Tools for Analyzing and Handling BirdNET Analyze Results},
     author = {Andrew J. Fairbairn},
     year = {2025},
-    note = {R package version 0.2.5},
+    note = {R package version 0.1.0},
     url = {https://github.com/AFairbairn/chirpR},
   }
 ```
