@@ -348,9 +348,10 @@ segment_audio <- function(birdnet_results,
       OFFSET = 0,
       DURATION = results_df$clip_duration,
       `MANUAL ID` = "",
-      `SCIENTIFIC NAME` = results_df$scientific_name,
-      `COMMON NAME` = results_df$common_name,
-      CONFIDENCE = results_df$confidence,
+      scientific_name = results_df$scientific_name,
+      common_name = results_df$common_name,
+      confidence = results_df$confidence,
+      original_file = results_df$original_file,
       stringsAsFactors = FALSE,
       check.names = FALSE
     )
