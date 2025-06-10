@@ -5,7 +5,7 @@
 #' Results are returned by species and site (if site_col is provided).
 #'
 #' @param df A dataframe containing bird detection data.
-#' @param interval_unit Character string for time interval grouping. Options: "minute", "15 minutes", "hour", "day". Default is "minute".
+#' @param interval_unit Character string for time interval grouping. Can be any value accepted by \code{lubridate::floor_date()}, such as "second", "minute", "hour", "day", "week", "month", "quarter", "year", or durations like "15 minutes", "30 seconds", etc. Default is "minute".
 #' @param time_col Character string specifying the column name containing detection time. This should be the actual time when the detection occurred (not start time + offset). Default is "timestamp".
 #' @param date_col Character string specifying the date column name (if separate from time_col). Default is "date".
 #' @param species_col Character string specifying the species column name. Default is "scientific_name".
@@ -36,15 +36,20 @@
 #'                             time_col = "detection_datetime",
 #'                             species_col = "species",
 #'                             date_col = NULL)  # No separate date column
+#'
+#' # Using other interval units supported by lubridate::floor_date
+#' var_result <- vocal_activity_rate(df, interval_unit = "week")
+#' var_result <- vocal_activity_rate(df, interval_unit = "30 seconds")
+#' var_result <- vocal_activity_rate(df, interval_unit = "2 hours")
 #' }
 vocal_activity_rate <- function(df,
-                           interval_unit = "minute",
-                           time_col = "timestamp",
-                           date_col = "date",
-                           species_col = "scientific_name",
-                           site_col = "site",
-                           recording_length_col = "recording_length",
-                           time_format = NULL) {
+                                interval_unit = "minute",
+                                time_col = "timestamp",
+                                date_col = "date",
+                                species_col = "scientific_name",
+                                site_col = "site",
+                                recording_length_col = "recording_length",
+                                time_format = NULL) {
 
   #--------------------------------------------------------------------------- #
   # Input validation

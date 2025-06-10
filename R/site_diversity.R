@@ -1,3 +1,4 @@
+
 #' Create a by-site summary with diversity metrics
 #'
 #' This function creates site-level summaries of ecological data, calculating
@@ -19,13 +20,16 @@
 #'
 #' @return A data frame with site-level summaries including:
 #'   \item{site}{Site identifier}
-#'   \item{abundance_summary}{Summary statistic of abundance data for each site}
-#'   \item{species_richness}{Number of species per site}
-#'   \item{shannon_diversity}{Shannon diversity index}
-#'   \item{simpson_diversity}{Simpson diversity index}
-#'   \item{richness}{Hill number q=0 (species richness)}
-#'   \item{shannon}{Hill number q=1 (exp of Shannon index)}
-#'   \item{simpson}{Hill number q=2 (inverse Simpson)}
+#'   \item{abundance_col or "var"}{Summary statistic of abundance data for each site. Column name
+#'     matches the input abundance_col parameter, or "var" if vocal activity rate was calculated internally}
+#'   \item{richness}{Species richness (Hill number q=0) - number of species per site}
+#'   \item{shannon}{Shannon diversity index (H') - natural logarithm based}
+#'   \item{simpson}{Simpson diversity index (1-D) - probability that two randomly selected
+#'     individuals belong to different species}
+#'   \item{q1}{Hill number q=1 - exponential of Shannon diversity (exp(H')), representing
+#'     the "effective number of common species"}
+#'   \item{q2}{Hill number q=2 - inverse Simpson diversity (1/D), representing the
+#'     "effective number of dominant species"}
 #'
 #' @details
 #' The function works in several steps:
@@ -33,12 +37,19 @@
 #'    (time_col, date_col, and other VAR parameters should be passed via ...)
 #' 2. Creates a species × site matrix with the specified summary statistic
 #' 3. Calculates diversity metrics using the vegan package
-#' 4. Calculates Hill numbers with intuitive names (richness, shannon, simpson)
+#' 4. Calculates Hill numbers for unified diversity measurement
 #'
-#' Hill numbers provide a unified framework for measuring diversity:
-#' - q=0 (richness): Species richness (number of species)
-#' - q=1 (shannon): Exponential of Shannon entropy
-#' - q=2 (simpson): Inverse Simpson concentration
+#' Hill numbers provide a unified framework for measuring diversity with different
+#' sensitivities to species frequencies:
+#' - q=0 (richness): Species richness - counts all species equally regardless of abundance
+#' - q=1 (shannon/q1): Exponential of Shannon entropy - weights species by their frequency,
+#'   giving the effective number of "common" species
+#' - q=2 (q2): Inverse Simpson concentration - emphasizes dominant species,
+#'   giving the effective number of "very abundant" species
+#'
+#' The traditional Shannon and Simpson indices are also provided:
+#' - Shannon index (H'): Measures uncertainty in species identity of a randomly chosen individual
+#' - Simpson index (1-D): Probability that two randomly chosen individuals are different species
 #'
 #' @examples
 #' \dontrun{

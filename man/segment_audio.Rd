@@ -16,7 +16,7 @@ segment_audio(
 )
 }
 \arguments{
-\item{birdnet_results}{Character. Path to the BirdNET results CSV file; usually a filtered file including only the detections to be validated.}
+\item{birdnet_results}{Character path to CSV file OR data.frame. Detection data to be processed.}
 
 \item{output_dir}{Character. Output directory for WAV files and new CSV}
 
@@ -76,9 +76,9 @@ segment_audio(
   output_format = "audacity"
 )
 
-# Auto-detect input format
+# Auto-detect input format with dataframe input
 segment_audio(
-  birdnet_results = "detections.csv",
+  birdnet_results = my_detections_df,
   output_dir = "validation_output"
 )
 }

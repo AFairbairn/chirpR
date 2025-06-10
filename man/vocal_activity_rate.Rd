@@ -18,7 +18,7 @@ vocal_activity_rate(
 \arguments{
 \item{df}{A dataframe containing bird detection data.}
 
-\item{interval_unit}{Character string for time interval grouping. Options: "minute", "15 minutes", "hour", "day". Default is "minute".}
+\item{interval_unit}{Character string for time interval grouping. Can be any value accepted by \code{lubridate::floor_date()}, such as "second", "minute", "hour", "day", "week", "month", "quarter", "year", or durations like "15 minutes", "30 seconds", etc. Default is "minute".}
 
 \item{time_col}{Character string specifying the column name containing detection time. This should be the actual time when the detection occurred (not start time + offset). Default is "timestamp".}
 
@@ -60,5 +60,10 @@ var_result <- vocal_activity_rate(df,
                             time_col = "detection_datetime",
                             species_col = "species",
                             date_col = NULL)  # No separate date column
+
+# Using other interval units supported by lubridate::floor_date
+var_result <- vocal_activity_rate(df, interval_unit = "week")
+var_result <- vocal_activity_rate(df, interval_unit = "30 seconds")
+var_result <- vocal_activity_rate(df, interval_unit = "2 hours")
 }
 }

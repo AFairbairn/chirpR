@@ -1,6 +1,6 @@
 Package: chirpR
 Title: Tools for Analyzing and Handling BirdNET Analyze Results
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Andrew J.", "Fairbairn", email = "andrew.fairbairn@tum.de",
            role = c("aut", "cre"),

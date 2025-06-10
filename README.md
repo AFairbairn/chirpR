@@ -26,14 +26,14 @@ analyzing and interpreting
 ### Citation
 
 Fairbairn A (2025). *chirpR: Tools for Analyzing and Handling BirdNET
-Analyze Results*. R package version 0.2.5,
+Analyze Results*. R package version 0.1.0,
 <https://github.com/AFairbairn/chirpR>
 
-     @Manual{,
+      @Manual{,
         title = {chirpR: Tools for Analyzing and Handling BirdNET Analyze Results},
         author = {Andrew J. Fairbairn},
         year = {2025},
-        note = {R package version 0.2.5},
+        note = {R package version 0.1.0},
         url = {https://github.com/AFairbairn/chirpR},
       }
 
