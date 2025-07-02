@@ -253,14 +253,6 @@ sample_confidence <- function(birdnet_results,
   min_conf <- min(df$conf_score)
   max_conf <- max(df$conf_score)
 
-  total_samples_needed <- n_bins * n_samples
-  if (nrow(df) < total_samples_needed) {
-    warning(paste("Insufficient data for stratified sampling: requested",
-                  total_samples_needed, "total samples (", n_samples,
-                  "x", n_bins, "bins per species) but only",
-                  nrow(df), "observations available. Using all available data."))
-  }
-
   if(min_conf == max_conf) {
     df$conf_bin <- factor(paste0("[", min_conf, ",", max_conf, "]"))
   } else {
