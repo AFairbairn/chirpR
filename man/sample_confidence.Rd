@@ -8,7 +8,7 @@ sample_confidence(
   birdnet_results,
   n_samples = 100,
   n_bins = 10,
-  resample = TRUE,
+  fill_target = TRUE,
   species = NULL,
   species_column = "scientific_name",
   create_clips = FALSE,
@@ -29,7 +29,7 @@ sample_confidence(
 
 \item{n_bins}{Integer. Number of confidence bins to create for stratified sampling (default: 10)}
 
-\item{resample}{Logical. If TRUE, resample from other bins to reach n_samples when bins are uneven. If FALSE, return equal samples per bin (may be fewer than n_samples) (default: TRUE)}
+\item{fill_target}{Logical. If TRUE, fill remaining slots from other bins to reach n_samples when bins are uneven. If FALSE, return equal samples per bin (may be fewer than n_samples) (default: TRUE)}
 
 \item{species}{Character vector. Species name(s) of interest. If NULL, all species in the data will be processed. (default: NULL)}
 
@@ -73,8 +73,8 @@ representation across the full confidence spectrum for each species separately.
 \itemize{
 \item Confidence scores are divided into n_bins equal-width bins based on the full dataset range
 \item Each species is sampled separately using the same bin structure
-\item If resample = TRUE: Target n_samples per species, resampling from populated bins if needed
-\item If resample = FALSE: Equal samples per bin per species, total may be less than n_samples
+\item If fill_target = TRUE: Target n_samples per species, resampling from populated bins if needed
+\item If fill_target = FALSE: Equal samples per bin per species, total may be less than n_samples
 \item All species results are combined into a single output dataset
 }
 
@@ -108,7 +108,7 @@ result <- sample_confidence(
   birdnet_results = "detections.csv",
   species = c("Turdus migratorius", "Corvus brachyrhynchos"),
   n_samples = 100,
-  resample = FALSE,
+  fill_target = FALSE,
   create_clips = FALSE
 )
 

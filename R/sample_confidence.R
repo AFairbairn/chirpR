@@ -8,7 +8,7 @@
 #' @param birdnet_results Character or data.frame. Either a path to a BirdNET detection file or a data frame containing BirdNET detections.
 #' @param n_samples Integer. Target number of samples to select per species (default: 100)
 #' @param n_bins Integer. Number of confidence bins to create for stratified sampling (default: 10)
-#' @param resample Logical. If TRUE, resample from other bins to reach n_samples when bins are uneven. If FALSE, return equal samples per bin (may be fewer than n_samples) (default: TRUE)
+#' @param fill_target Logical. If TRUE, fill remaining slots from other bins to reach n_samples when bins are uneven. If FALSE, return equal samples per bin (may be fewer than n_samples) (default: TRUE)
 #' @param species Character vector. Species name(s) of interest. If NULL, all species in the data will be processed. (default: NULL)
 #' @param species_column Character. Column name containing the species names. (default: "scientific_name")
 #' @param create_clips Logical. If TRUE, create validation audio clips using create_validation_data (default: FALSE)
@@ -32,8 +32,8 @@
 #' **Sampling Strategy:**
 #' - Confidence scores are divided into n_bins equal-width bins based on the full dataset range
 #' - Each species is sampled separately using the same bin structure
-#' - If resample = TRUE: Target n_samples per species, resampling from populated bins if needed
-#' - If resample = FALSE: Equal samples per bin per species, total may be less than n_samples
+#' - If fill_target = TRUE: Target n_samples per species, resampling from populated bins if needed
+#' - If fill_target = FALSE: Equal samples per bin per species, total may be less than n_samples
 #' - All species results are combined into a single output dataset
 #'
 #' **Multi-Species Processing:**
@@ -62,7 +62,7 @@
 #'   birdnet_results = "detections.csv",
 #'   species = c("Turdus migratorius", "Corvus brachyrhynchos"),
 #'   n_samples = 100,
-#'   resample = FALSE,
+#'   fill_target = FALSE,
 #'   create_clips = FALSE
 #' )
 #'
@@ -73,7 +73,7 @@
 sample_confidence <- function(birdnet_results,
                                  n_samples = 100,
                                  n_bins = 10,
-                                 resample = TRUE,
+                                 fill_target = TRUE,
                                  species = NULL,
                                  species_column = "scientific_name",
                                  create_clips = FALSE,
@@ -87,7 +87,7 @@ sample_confidence <- function(birdnet_results,
                                  ...) {
 
   # Helper function to process a single species
-  process_species <- function(species, df, n_samples, n_bins, resample) {
+  process_species <- function(species, df, n_samples, n_bins, fill_target) {
 
     # Check if we have enough data total
     if (n_samples > nrow(df)) {
@@ -118,8 +118,8 @@ sample_confidence <- function(birdnet_results,
     }
 
 
-    # Second pass: redistribute if resample=TRUE
-    if (resample && length(sampled_indices) < n_samples) {
+    # Second pass: redistribute if fill_target=TRUE
+    if (fill_target && length(sampled_indices) < n_samples) {
       remaining_needed <- n_samples - length(sampled_indices)
       unused_indices <- setdiff(seq_len(nrow(df)), sampled_indices)
 
@@ -175,8 +175,8 @@ sample_confidence <- function(birdnet_results,
     stop("n_bins must be a positive integer")
   }
 
-  if (!is.logical(resample)) {
-    stop("resample must be TRUE or FALSE")
+  if (!is.logical(fill_target)) {
+    stop("fill_target must be TRUE or FALSE")
   }
 
   if (!is.logical(create_clips)) {
@@ -250,18 +250,30 @@ sample_confidence <- function(birdnet_results,
     available_species <- species
   }
 
-  min_conf_data <- min(df$conf_score)
-  max_conf_data <- max(df$conf_score)
+  min_conf <- min(df$conf_score)
+  max_conf <- max(df$conf_score)
 
-  # Create bin breaks with a small buffer to ensure all values are included
-  bin_width <- (max_conf_data - min_conf_data) / n_bins
-  bin_breaks <- seq(min_conf_data, max_conf_data + bin_width * 0.0001, length.out = n_bins + 1)
+  total_samples_needed <- n_bins * n_samples
+  if (nrow(df) < total_samples_needed) {
+    warning(paste("Insufficient data for stratified sampling: requested",
+                  total_samples_needed, "total samples (", n_samples,
+                  "x", n_bins, "bins per species) but only",
+                  nrow(df), "observations available. Using all available data."))
+  }
 
-  # Ensure the last break is definitely larger than the max value
-  bin_breaks[length(bin_breaks)] <- max(bin_breaks[length(bin_breaks)], max_conf_data + 1e-10)
+  if(min_conf == max_conf) {
+    df$conf_bin <- factor(paste0("[", min_conf, ",", max_conf, "]"))
+  } else {
+    # Create bin breaks with a small buffer to ensure all values are included
+    bin_width <- (max_conf - min_conf) / n_bins
+    bin_breaks <- seq(min_conf, max_conf + bin_width * 0.0001, length.out = n_bins + 1)
 
-  # Apply bins to ALL data ONCE and don't recalculate
-  df$conf_bin <- cut(df$conf_score, breaks = bin_breaks, include.lowest = TRUE, right = FALSE)
+    # Ensure the last break is definitely larger than the max value
+    bin_breaks[length(bin_breaks)] <- max(bin_breaks[length(bin_breaks)], max_conf + 1e-10)
+
+    # Apply bins to ALL data ONCE and don't recalculate
+    df$conf_bin <- cut(df$conf_score, breaks = bin_breaks, include.lowest = TRUE, right = FALSE)
+  }
 
   # Initialize combined results
   all_sampled_rows <- list()
@@ -277,7 +289,7 @@ sample_confidence <- function(birdnet_results,
     }
 
     # Sample this species using the global bins
-    species_sampled <- process_species(current_species, species_df, n_samples, n_bins, resample)
+    species_sampled <- process_species(current_species, species_df, n_samples, n_bins, fill_target)
 
     if (!is.null(species_sampled) && nrow(species_sampled) > 0) {
       all_sampled_rows[[current_species]] <- species_sampled

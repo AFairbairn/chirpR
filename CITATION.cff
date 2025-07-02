@@ -54,6 +54,10 @@ references:
   - family-names: Schwendinger
     given-names: Benjamin
     orcid: https://orcid.org/0000-0003-3315-8114
+  - family-names: Krylov
+    given-names: Ivan
+    email: ikrylov@disroot.org
+    orcid: https://orcid.org/0000-0002-0172-3812
   year: '2025'
   doi: 10.32614/CRAN.package.data.table
 - type: software
@@ -99,7 +103,7 @@ references:
   title: vegan
   abstract: 'vegan: Community Ecology Package'
   notes: Imports
-  url: https://github.com/vegandevs/vegan
+  url: https://vegandevs.github.io/vegan/
   repository: https://CRAN.R-project.org/package=vegan
   authors:
   - family-names: Oksanen
@@ -134,6 +138,8 @@ references:
     given-names: Ben
   - family-names: Borcard
     given-names: Daniel
+  - family-names: Borman
+    given-names: Tuomas
   - family-names: Carvalho
     given-names: Gustavo
   - family-names: Chirico
@@ -156,6 +162,8 @@ references:
     given-names: Mark O.
   - family-names: Lahti
     given-names: Leo
+  - family-names: Martino
+    given-names: Cameron
   - family-names: McGlinn
     given-names: Dan
   - family-names: Ouellette

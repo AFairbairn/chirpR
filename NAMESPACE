@@ -3,6 +3,7 @@
 export(rename_audio_files)
 export(sample_confidence)
 export(segment_audio)
+export(site_community)
 export(site_diversity)
 export(species_threshold)
 export(vocal_activity_rate)
