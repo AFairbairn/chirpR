@@ -2,24 +2,22 @@
 % Please edit documentation in R/species_threshold.R
 \name{species_threshold}
 \alias{species_threshold}
-\title{Calculate confidence thresholds}
+\title{Calculate confidence threshold for a single species}
 \usage{
 species_threshold(
   df,
-  species_col,
   valid_col,
   conf_col,
   p = 0.95,
   backtransform = TRUE,
   sensitivity = 1,
   threshold_only = FALSE,
-  plot = FALSE
+  plot = FALSE,
+  plot_logit = FALSE
 )
 }
 \arguments{
-\item{df}{A data frame containing species detection data}
-
-\item{species_col}{Character string specifying the column name containing species names}
+\item{df}{A data frame containing species detection data for a single species}
 
 \item{valid_col}{Character string specifying the column name containing binary validation data (0/1, TRUE/FALSE)}
 
@@ -31,38 +29,42 @@ species_threshold(
 
 \item{sensitivity}{Numeric value for sensitivity parameter used in logit transformation (default: 1.0)}
 
-\item{threshold_only}{Logical. If TRUE, returns only species and thresholds. If FALSE, returns complete results (default: FALSE)}
+\item{threshold_only}{Logical. If TRUE, returns only the threshold value. If FALSE, returns complete results (default: FALSE)}
 
-\item{plot}{Logical. If TRUE, creates base R plots for each species (default: FALSE)}
+\item{plot}{Logical. If TRUE, creates a base R plot (default: FALSE)}
+
+\item{plot_logit}{Logical. If TRUE and backtransform=TRUE, plots on logit scale instead of original confidence scale (default: FALSE)}
 }
 \value{
-If threshold_only = TRUE, returns a data frame with species and thresholds.
+If threshold_only = TRUE, returns a numeric threshold value.
 If threshold_only = FALSE, returns a list containing:
 \itemize{
-\item thresholds: data frame with species and calculated thresholds
-\item models: list of fitted glm models for each species (contains raw data)
-\item predictions: data frame with predictions and confidence intervals for each species
+\item threshold: numeric threshold value
+\item logit_threshold: threshold on the logit scale
+\item model: fitted glm model object
+\item predictions: data frame with predictions and confidence intervals
+\item parameters: list of function parameters used
 }
 }
 \description{
-This function fits logistic regression models to calculate confidence thresholds
-for each species validated. It can handle single or multiple species and
-returns either just thresholds or complete model results with predictions.
+This function fits a logistic regression model to calculate confidence threshold
+for a single species. It returns either just the threshold or complete model
+results with predictions.
 }
 \examples{
-# Example with single species
+# Example with single species data
 df_single <- data.frame(
-  species = rep("Species_A", 100),
   is_valid = rbinom(100, 1, 0.7),
   confidence_score = runif(100, 0, 1)
 )
 
-# Get thresholds only (non-transformed)
-thresholds_only <- species_threshold(df_single, "species", "is_valid", "confidence_score",
-                                     backtransform = FALSE, threshold_only = TRUE)
+# Get threshold only (non-transformed)
+threshold_only <- species_threshold_single(df_single, "is_valid", "confidence_score",
+                                          backtransform = FALSE, threshold_only = TRUE)
 
-# Get complete results with logit transformation and plots
-full_results <- species_threshold(df_single, "species", "is_valid", "confidence_score",
-                                  backtransform = TRUE, sensitivity = 1.0, plot = TRUE)
+# Get complete results with logit transformation and plot on logit scale
+full_results <- species_threshold_single(df_single, "is_valid", "confidence_score",
+                                        backtransform = TRUE, sensitivity = 1.0,
+                                        plot = TRUE, plot_logit = TRUE)
 
 }
