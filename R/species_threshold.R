@@ -32,11 +32,11 @@
 #' )
 #'
 #' # Get threshold only (non-transformed)
-#' threshold_only <- species_threshold_single(df_single, "is_valid", "confidence_score",
+#' threshold_only <- species_threshold(df_single, "is_valid", "confidence_score",
 #'                                           backtransform = FALSE, threshold_only = TRUE)
 #'
 #' # Get complete results with logit transformation and plot on logit scale
-#' full_results <- species_threshold_single(df_single, "is_valid", "confidence_score",
+#' full_results <- species_threshold(df_single, "is_valid", "confidence_score",
 #'                                         backtransform = TRUE, sensitivity = 1.0,
 #'                                         plot = TRUE, plot_logit = TRUE)
 #'
