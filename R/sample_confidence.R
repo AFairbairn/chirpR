@@ -250,8 +250,8 @@ sample_confidence <- function(birdnet_results,
     available_species <- species
   }
 
-  min_conf <- min(df$conf_score)
-  max_conf <- max(df$conf_score)
+  # min_conf <- min(df$conf_score)
+  # max_conf <- max(df$conf_score)
 
   if(min_conf == max_conf) {
     df$conf_bin <- factor(paste0("[", min_conf, ",", max_conf, "]"))
