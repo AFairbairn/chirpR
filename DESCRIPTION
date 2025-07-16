@@ -18,7 +18,7 @@ BugReports: https://github.com/AFairbairn/chirpR/issues
 Imports:
     data.table,
     lubridate,
-    tuneR, 
+    av, 
     vegan
 Suggests:
     testthat (>= 3.0.0),

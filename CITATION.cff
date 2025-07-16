@@ -77,28 +77,18 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.lubridate
 - type: software
-  title: tuneR
-  abstract: 'tuneR: Analysis of Music and Speech'
+  title: av
+  abstract: 'av: Working with Audio and Video in R'
   notes: Imports
-  repository: https://CRAN.R-project.org/package=tuneR
+  url: https://ropensci.r-universe.dev/av
+  repository: https://CRAN.R-project.org/package=av
   authors:
-  - family-names: Ligges
-    given-names: Uwe
-    email: ligges@statistik.tu-dortmund.de
-    orcid: https://orcid.org/0000-0001-5875-6167
-  - family-names: Krey
-    given-names: Sebastian
-  - family-names: Mersmann
-    given-names: Olaf
-  - family-names: Schnackenberg
-    given-names: Sarah
-  - family-names: Guénard
-    given-names: Guillaume
-  - family-names: Ellis
-    given-names: Daniel P. W.
-  - name: Underbit Technologies
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
   year: '2025'
-  doi: 10.32614/CRAN.package.tuneR
+  doi: 10.32614/CRAN.package.av
 - type: software
   title: vegan
   abstract: 'vegan: Community Ecology Package'
