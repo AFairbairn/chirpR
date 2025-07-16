@@ -2,7 +2,7 @@
 % Please edit documentation in R/segment_audio.R
 \name{segment_audio}
 \alias{segment_audio}
-\title{Create Validation Data from Detection List}
+\title{Create Validation Data from Detection List (Parallel Version)}
 \usage{
 segment_audio(
   birdnet_results,
@@ -12,7 +12,8 @@ segment_audio(
   input_format = "auto",
   output_format = "auto",
   file_path_col = "filepath",
-  start_time_col = "start_time"
+  start_time_col = "start_time",
+  n_cores = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ segment_audio(
 \item{file_path_col}{Character. Column name for file paths when input_format = "csv" (default: "filepath")}
 
 \item{start_time_col}{Character. Column name for start times when input_format = "csv" (default: "start_time")}
+
+\item{n_cores}{Integer. Number of CPU cores to use. If NULL, uses all available cores minus 1 (default: NULL)}
 }
 \value{
 Invisibly returns the path to the created validation CSV file
@@ -39,48 +42,4 @@ Invisibly returns the path to the created validation CSV file
 This function processes detection data in various formats and creates audio clips
 for validation purposes. It supports multiple input formats and output formats
 for compatibility with different software packages including BirdNET-Analyzer formats.
-}
-\details{
-\strong{Input Formats (BirdNET-Analyzer compatible):}
-\itemize{
-\item "table": BirdNET table format with columns: filepath, start_time, end_time, common_name, confidence
-\item "audacity": Audacity labels format with columns: filepath, start_time, end_time, common_name
-\item "kaleidoscope": Kaleidoscope format with columns: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
-\item "csv": Generic CSV format with customizable column names
-\item "auto": Automatically detects format based on available columns
-}
-
-\strong{Output Formats:}
-\itemize{
-\item "table": BirdNET table format
-\item "audacity": Audacity labels format
-\item "kaleidoscope": Kaleidoscope format
-\item "csv": Generic CSV format
-}
-}
-\examples{
-\dontrun{
-# BirdNET table format input and output
-segment_audio(
-  birdnet_results = "birdnet_detections.csv",
-  output_dir = "validation_output",
-  input_format = "table",
-  output_format = "table"
-)
-
-# Kaleidoscope format input, Audacity output
-segment_audio(
-  birdnet_results = "kaleidoscope_detections.csv",
-  output_dir = "validation_output",
-  input_format = "kaleidoscope",
-  output_format = "audacity"
-)
-
-# Auto-detect input format with dataframe input
-segment_audio(
-  birdnet_results = my_detections_df,
-  output_dir = "validation_output"
-)
-}
-
 }

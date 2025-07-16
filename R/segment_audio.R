@@ -1,4 +1,4 @@
-#' Create Validation Data from Detection List
+#' Create Validation Data from Detection List (Parallel Version)
 #'
 #' This function processes detection data in various formats and creates audio clips
 #' for validation purposes. It supports multiple input formats and output formats
@@ -12,50 +12,13 @@
 #' @param output_format Character. Format of output CSV. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")
 #' @param file_path_col Character. Column name for file paths when input_format = "csv" (default: "filepath")
 #' @param start_time_col Character. Column name for start times when input_format = "csv" (default: "start_time")
+#' @param n_cores Integer. Number of CPU cores to use. If NULL, uses all available cores minus 1 (default: NULL)
 #'
 #' @return Invisibly returns the path to the created validation CSV file
 #'
-#' @details
-#' **Input Formats (BirdNET-Analyzer compatible):**
-#' - "table": BirdNET table format with columns: filepath, start_time, end_time, common_name, confidence
-#' - "audacity": Audacity labels format with columns: filepath, start_time, end_time, common_name
-#' - "kaleidoscope": Kaleidoscope format with columns: INDIR, FOLDER, IN FILE, OFFSET, DURATION, MANUAL ID
-#' - "csv": Generic CSV format with customizable column names
-#' - "auto": Automatically detects format based on available columns
-#'
-#' **Output Formats:**
-#' - "table": BirdNET table format
-#' - "audacity": Audacity labels format
-#' - "kaleidoscope": Kaleidoscope format
-#' - "csv": Generic CSV format
-#'
-#' @examples
-#' \dontrun{
-#' # BirdNET table format input and output
-#' segment_audio(
-#'   birdnet_results = "birdnet_detections.csv",
-#'   output_dir = "validation_output",
-#'   input_format = "table",
-#'   output_format = "table"
-#' )
-#'
-#' # Kaleidoscope format input, Audacity output
-#' segment_audio(
-#'   birdnet_results = "kaleidoscope_detections.csv",
-#'   output_dir = "validation_output",
-#'   input_format = "kaleidoscope",
-#'   output_format = "audacity"
-#' )
-#'
-#' # Auto-detect input format with dataframe input
-#' segment_audio(
-#'   birdnet_results = my_detections_df,
-#'   output_dir = "validation_output"
-#' )
-#' }
-#'
 #' @export
-#' @importFrom tuneR readWave Wave writeWave
+#' @importFrom av av_audio_convert av_media_info
+#' @importFrom parallel detectCores makeCluster clusterExport parLapply stopCluster
 segment_audio <- function(birdnet_results,
                           output_dir,
                           padding = 2,
@@ -63,7 +26,8 @@ segment_audio <- function(birdnet_results,
                           input_format = "auto",
                           output_format = "auto",
                           file_path_col = "filepath",
-                          start_time_col = "start_time") {
+                          start_time_col = "start_time",
+                          n_cores = NULL) {
 
   # Validate inputs
   if (!is.numeric(padding) || padding < 0) {
@@ -84,6 +48,13 @@ segment_audio <- function(birdnet_results,
   if (!output_format %in% valid_output_formats) {
     stop("Invalid output_format. Must be one of: ", paste(valid_output_formats, collapse = ", "))
   }
+
+  # Set up parallel processing
+  if (is.null(n_cores)) {
+    n_cores <- max(1, parallel::detectCores() - 1)
+  }
+
+  cat("Using", n_cores, "CPU cores for parallel processing\n")
 
   # Create output directory if it doesn't exist
   if (!dir.exists(output_dir)) {
@@ -111,6 +82,7 @@ segment_audio <- function(birdnet_results,
     stop("birdnet_results must be either a file path (character) or a data.frame")
   }
 
+  # [Keep all the format detection and standardization code the same...]
   # Detect input format if auto
   if (input_format == "auto") {
     # BirdNET table format
@@ -225,93 +197,101 @@ segment_audio <- function(birdnet_results,
   # Add unique_id column
   df$unique_id <- seq_len(nrow(df))
 
-  # Function to cut individual WAV file
+  # Optimized cut_wav function using av package
   cut_wav <- function(row_data) {
     tryCatch({
       wav_path <- row_data$full_path
 
       if (!file.exists(wav_path)) {
-        warning("WAV file not found: ", wav_path)
-        return(NULL)
+        return(list(error = paste("WAV file not found:", wav_path)))
       }
-
-      # Read the WAV file using tuneR
-      wav_file <- tuneR::readWave(wav_path)
-      sample_rate <- wav_file@samp.rate
 
       # Calculate start and end times
       start_time <- max(0, row_data$detection_start - padding)
-      end_time <- row_data$detection_start + duration + padding
-
-      start_sample <- max(1, round(start_time * sample_rate))
-      end_sample <- min(length(wav_file@left), round(end_time * sample_rate))
-
-      # Extract the segment
-      if (wav_file@stereo) {
-        left_segment <- wav_file@left[start_sample:end_sample]
-        right_segment <- wav_file@right[start_sample:end_sample]
-        wav_segment <- tuneR::Wave(left = left_segment, right = right_segment,
-                                   samp.rate = sample_rate, bit = wav_file@bit)
-      } else {
-        left_segment <- wav_file@left[start_sample:end_sample]
-        wav_segment <- tuneR::Wave(left = left_segment, samp.rate = sample_rate,
-                                   bit = wav_file@bit)
-      }
+      total_duration <- duration + 2 * padding
 
       # Create output filename and path
       new_wav_name <- paste0(row_data$unique_id, ".wav")
       new_wav_path <- file.path(wav_output_dir, new_wav_name)
 
-      # Write the new WAV file
-      tuneR::writeWave(wav_segment, new_wav_path)
+      # Use av package to extract segment directly - much faster!
+      av::av_audio_convert(
+        audio = wav_path,
+        output = new_wav_path,
+        start_time = start_time,
+        total_time = total_duration,
+        verbose = FALSE
+      )
 
       # Return standardized row info
-      result <- list(
+      return(list(
         unique_id = row_data$unique_id,
         original_file = basename(row_data$full_path),
         original_dir = dirname(row_data$full_path),
         new_file_path = new_wav_path,
         new_file_name = new_wav_name,
         original_start_time = row_data$detection_start,
-        clip_duration = duration + 2 * padding,
+        clip_duration = total_duration,
         padding_used = padding,
         common_name = if("common_name" %in% names(row_data)) row_data$common_name else "Unknown",
         scientific_name = if("scientific_name" %in% names(row_data)) row_data$scientific_name else NA,
         confidence = if("confidence" %in% names(row_data)) row_data$confidence else NA
-      )
-
-      return(result)
+      ))
 
     }, error = function(e) {
-      warning("Error processing row ", row_data$unique_id, ": ", e$message)
-      return(NULL)
+      return(list(error = paste("Error processing row", row_data$unique_id, ":", e$message)))
     })
   }
 
-  # Process each row
-  cat("Processing", nrow(df), "audio files...\n")
-  processed_rows <- list()
+  # Process files in parallel
+  cat("Processing", nrow(df), "audio files using", n_cores, "cores...\n")
 
-  for (i in seq_len(nrow(df))) {
-    if (i %% 10 == 0) {
-      cat("Processed", i, "of", nrow(df), "files\n")
-    }
+  # Create cluster
+  cl <- parallel::makeCluster(n_cores)
 
-    row_result <- cut_wav(df[i, ])
-    if (!is.null(row_result)) {
-      processed_rows[[length(processed_rows) + 1]] <- row_result
+  # Export necessary variables and functions to cluster
+  parallel::clusterExport(cl, c("cut_wav", "wav_output_dir", "padding", "duration"), envir = environment())
+
+  # Load required packages on each worker
+  parallel::clusterEvalQ(cl, {
+    library(av)
+  })
+
+  # Convert dataframe to list of rows for parallel processing
+  df_list <- lapply(seq_len(nrow(df)), function(i) df[i, ])
+
+  # Process in parallel
+  start_time <- Sys.time()
+  results <- parallel::parLapply(cl, df_list, cut_wav)
+  end_time <- Sys.time()
+
+  # Stop cluster
+  parallel::stopCluster(cl)
+
+  cat("Parallel processing completed in", round(as.numeric(end_time - start_time), 2), "seconds\n")
+
+  # Filter out errors and extract successful results
+  successful_results <- results[!sapply(results, function(x) "error" %in% names(x))]
+  errors <- results[sapply(results, function(x) "error" %in% names(x))]
+
+  # Report errors
+  if (length(errors) > 0) {
+    cat("Errors encountered:\n")
+    for (err in errors) {
+      cat("  -", err$error, "\n")
     }
   }
 
-  if (length(processed_rows) == 0) {
+  if (length(successful_results) == 0) {
     stop("No audio files were successfully processed")
   }
 
   # Convert to data frame
-  results_df <- do.call(rbind, lapply(processed_rows, function(x) {
+  results_df <- do.call(rbind, lapply(successful_results, function(x) {
     data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   }))
 
+  # [Keep all the output format creation code the same...]
   # Create output format based on BirdNET specifications
   if (output_format == "table") {
     # BirdNET table format
