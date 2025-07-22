@@ -290,28 +290,41 @@ segment_audio <- function(birdnet_results,
   # Process files in parallel
   cat("Processing", nrow(df), "audio files using", n_cores, "cores...\n")
 
-  # Create cluster
-  cl <- parallel::makeCluster(n_cores)
+  # Create cluster with proper cleanup
+  cl <- NULL
+  results <- tryCatch({
+    cl <- parallel::makeCluster(n_cores)
 
-  # Export necessary variables and functions to cluster
-  parallel::clusterExport(cl, c("cut_wav", "get_additional_col_values", "wav_output_dir",
-                                "padding", "duration", "additional_cols"), envir = environment())
+    # Export necessary variables and functions to cluster
+    parallel::clusterExport(cl, c("cut_wav", "get_additional_col_values", "wav_output_dir",
+                                  "padding", "duration", "additional_cols"), envir = environment())
 
-  # Load required packages on each worker
-  parallel::clusterEvalQ(cl, {
-    library(av)
+    # Load required packages on each worker
+    parallel::clusterEvalQ(cl, {
+      library(av)
+    })
+
+    # Convert dataframe to list of rows for parallel processing
+    df_list <- lapply(seq_len(nrow(df)), function(i) df[i, ])
+
+    # Process in parallel
+    start_time <- Sys.time()
+    results <- parallel::parLapply(cl, df_list, cut_wav)
+    end_time <- Sys.time()
+
+    cat("Parallel processing completed in", round(as.numeric(end_time - start_time), 2), "seconds\n")
+
+    results
+
+  }, finally = {
+    # Ensure cluster is always stopped, even if there's an error
+    if (!is.null(cl)) {
+      try(parallel::stopCluster(cl), silent = TRUE)
+      cl <- NULL
+    }
+    # Force garbage collection to clean up connections
+    gc()
   })
-
-  # Convert dataframe to list of rows for parallel processing
-  df_list <- lapply(seq_len(nrow(df)), function(i) df[i, ])
-
-  # Process in parallel
-  start_time <- Sys.time()
-  results <- parallel::parLapply(cl, df_list, cut_wav)
-  end_time <- Sys.time()
-
-  # Stop cluster
-  parallel::stopCluster(cl)
 
   cat("Parallel processing completed in", round(as.numeric(end_time - start_time), 2), "seconds\n")
 
