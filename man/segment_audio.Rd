@@ -13,6 +13,7 @@ segment_audio(
   output_format = "auto",
   file_path_col = "filepath",
   start_time_col = "start_time",
+  additional_cols = NULL,
   n_cores = NULL
 )
 }
@@ -32,6 +33,8 @@ segment_audio(
 \item{file_path_col}{Character. Column name for file paths when input_format = "csv" (default: "filepath")}
 
 \item{start_time_col}{Character. Column name for start times when input_format = "csv" (default: "start_time")}
+
+\item{additional_cols}{Character vector. Names of additional columns from input data to include in output (default: NULL)}
 
 \item{n_cores}{Integer. Number of CPU cores to use. If NULL, uses all available cores minus 1 (default: NULL)}
 }

@@ -12,6 +12,7 @@
 #' @param output_format Character. Format of output CSV. Options: "table", "kaleidoscope", "csv", "auto" (default: "auto")
 #' @param file_path_col Character. Column name for file paths when input_format = "csv" (default: "filepath")
 #' @param start_time_col Character. Column name for start times when input_format = "csv" (default: "start_time")
+#' @param additional_cols Character vector. Names of additional columns from input data to include in output (default: NULL)
 #' @param n_cores Integer. Number of CPU cores to use. If NULL, uses all available cores minus 1 (default: NULL)
 #'
 #' @return Invisibly returns the path to the created validation CSV file
@@ -27,6 +28,7 @@ segment_audio <- function(birdnet_results,
                           output_format = "auto",
                           file_path_col = "filepath",
                           start_time_col = "start_time",
+                          additional_cols = NULL,
                           n_cores = NULL) {
 
   # Validate inputs
@@ -47,6 +49,11 @@ segment_audio <- function(birdnet_results,
 
   if (!output_format %in% valid_output_formats) {
     stop("Invalid output_format. Must be one of: ", paste(valid_output_formats, collapse = ", "))
+  }
+
+  # Validate additional_cols parameter
+  if (!is.null(additional_cols) && !is.character(additional_cols)) {
+    stop("additional_cols must be a character vector or NULL")
   }
 
   # Set up parallel processing
@@ -82,7 +89,19 @@ segment_audio <- function(birdnet_results,
     stop("birdnet_results must be either a file path (character) or a data.frame")
   }
 
-  # [Keep all the format detection and standardization code the same...]
+  # Validate additional_cols against available columns
+  if (!is.null(additional_cols)) {
+    missing_additional_cols <- additional_cols[!additional_cols %in% names(df)]
+    if (length(missing_additional_cols) > 0) {
+      warning("The following additional columns were not found in input data and will be ignored: ",
+              paste(missing_additional_cols, collapse = ", "))
+      additional_cols <- additional_cols[additional_cols %in% names(df)]
+    }
+    if (length(additional_cols) > 0) {
+      cat("Additional columns to include:", paste(additional_cols, collapse = ", "), "\n")
+    }
+  }
+
   # Detect input format if auto
   if (input_format == "auto") {
     # BirdNET table format
@@ -197,6 +216,23 @@ segment_audio <- function(birdnet_results,
   # Add unique_id column
   df$unique_id <- seq_len(nrow(df))
 
+  # Function to extract additional column values
+  get_additional_col_values <- function(row_data, cols) {
+    if (is.null(cols) || length(cols) == 0) {
+      return(list())
+    }
+
+    result <- list()
+    for (col in cols) {
+      if (col %in% names(row_data)) {
+        result[[col]] <- row_data[[col]]
+      } else {
+        result[[col]] <- NA
+      }
+    }
+    return(result)
+  }
+
   # Optimized cut_wav function using av package
   cut_wav <- function(row_data) {
     tryCatch({
@@ -223,8 +259,11 @@ segment_audio <- function(birdnet_results,
         verbose = FALSE
       )
 
-      # Return standardized row info
-      return(list(
+      # Get additional column values
+      additional_values <- get_additional_col_values(row_data, additional_cols)
+
+      # Return standardized row info with additional columns
+      result <- list(
         unique_id = row_data$unique_id,
         original_file = basename(row_data$full_path),
         original_dir = dirname(row_data$full_path),
@@ -236,7 +275,12 @@ segment_audio <- function(birdnet_results,
         common_name = if("common_name" %in% names(row_data)) row_data$common_name else "Unknown",
         scientific_name = if("scientific_name" %in% names(row_data)) row_data$scientific_name else NA,
         confidence = if("confidence" %in% names(row_data)) row_data$confidence else NA
-      ))
+      )
+
+      # Add additional column values to result
+      result <- c(result, additional_values)
+
+      return(result)
 
     }, error = function(e) {
       return(list(error = paste("Error processing row", row_data$unique_id, ":", e$message)))
@@ -250,7 +294,8 @@ segment_audio <- function(birdnet_results,
   cl <- parallel::makeCluster(n_cores)
 
   # Export necessary variables and functions to cluster
-  parallel::clusterExport(cl, c("cut_wav", "wav_output_dir", "padding", "duration"), envir = environment())
+  parallel::clusterExport(cl, c("cut_wav", "get_additional_col_values", "wav_output_dir",
+                                "padding", "duration", "additional_cols"), envir = environment())
 
   # Load required packages on each worker
   parallel::clusterEvalQ(cl, {
@@ -286,12 +331,11 @@ segment_audio <- function(birdnet_results,
     stop("No audio files were successfully processed")
   }
 
-  # Convert to data frame
+  # Convert to data frame - handle variable column numbers
   results_df <- do.call(rbind, lapply(successful_results, function(x) {
     data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   }))
 
-  # [Keep all the output format creation code the same...]
   # Create output format based on BirdNET specifications
   if (output_format == "table") {
     # BirdNET table format
@@ -304,6 +348,16 @@ segment_audio <- function(birdnet_results,
       confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
+
+    # Add additional columns if they exist
+    if (!is.null(additional_cols) && length(additional_cols) > 0) {
+      for (col in additional_cols) {
+        if (col %in% names(results_df)) {
+          out_df[[col]] <- results_df[[col]]
+        }
+      }
+    }
+
     output_filename <- "validation_table.csv"
 
   } else if (output_format == "audacity") {
@@ -317,6 +371,16 @@ segment_audio <- function(birdnet_results,
       confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
+
+    # Add additional columns if they exist
+    if (!is.null(additional_cols) && length(additional_cols) > 0) {
+      for (col in additional_cols) {
+        if (col %in% names(results_df)) {
+          out_df[[col]] <- results_df[[col]]
+        }
+      }
+    }
+
     output_filename <- "validation_audacity.txt"
 
   } else if (output_format == "kaleidoscope") {
@@ -335,6 +399,16 @@ segment_audio <- function(birdnet_results,
       stringsAsFactors = FALSE,
       check.names = FALSE
     )
+
+    # Add additional columns if they exist
+    if (!is.null(additional_cols) && length(additional_cols) > 0) {
+      for (col in additional_cols) {
+        if (col %in% names(results_df)) {
+          out_df[[col]] <- results_df[[col]]
+        }
+      }
+    }
+
     output_filename <- "validation_kaleidoscope.csv"
 
   } else if (output_format == "csv") {
@@ -350,6 +424,16 @@ segment_audio <- function(birdnet_results,
       confidence = results_df$confidence,
       stringsAsFactors = FALSE
     )
+
+    # Add additional columns if they exist
+    if (!is.null(additional_cols) && length(additional_cols) > 0) {
+      for (col in additional_cols) {
+        if (col %in% names(results_df)) {
+          out_df[[col]] <- results_df[[col]]
+        }
+      }
+    }
+
     output_filename <- "validation_data.csv"
   }
 
@@ -357,7 +441,7 @@ segment_audio <- function(birdnet_results,
   out_csv_path <- file.path(output_dir, output_filename)
 
   if (output_format == "audacity") {
-    # Audacity format is tab-separated without headers
+    # Audacity format is tab-separated without headers - only core columns for compatibility
     write.table(out_df[, c("start_time", "end_time", "common_name")],
                 out_csv_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
   } else {
@@ -369,6 +453,10 @@ segment_audio <- function(birdnet_results,
   cat("Output file written to:", out_csv_path, "\n")
   cat("WAV files written to:", wav_output_dir, "\n")
   cat("Output format:", output_format, "\n")
+
+  if (!is.null(additional_cols) && length(additional_cols) > 0) {
+    cat("Additional columns included:", paste(additional_cols, collapse = ", "), "\n")
+  }
 
   return(invisible(out_csv_path))
 }
