@@ -326,7 +326,6 @@ segment_audio <- function(birdnet_results,
     gc()
   })
 
-  cat("Parallel processing completed in", round(as.numeric(end_time - start_time), 2), "seconds\n")
 
   # Filter out errors and extract successful results
   successful_results <- results[!sapply(results, function(x) "error" %in% names(x))]
@@ -401,17 +400,20 @@ segment_audio <- function(birdnet_results,
     out_df <- data.frame(
       INDIR = ".",
       FOLDER = "wav_files",
-      `IN FILE` = results_df$new_file_name,
+      IN_FILE = results_df$new_file_name,    # Use underscore temporarily
       OFFSET = 0,
       DURATION = results_df$clip_duration,
-      `MANUAL ID` = "",
+      MANUAL_ID = "",                        # Use underscore temporarily
       scientific_name = results_df$scientific_name,
       common_name = results_df$common_name,
       confidence = results_df$confidence,
       original_file = results_df$original_file,
-      stringsAsFactors = FALSE,
-      check.names = FALSE
+      stringsAsFactors = FALSE
     )
+
+    # Explicitly set column names with spaces
+    names(out_df)[names(out_df) == "IN_FILE"] <- "IN FILE"
+    names(out_df)[names(out_df) == "MANUAL_ID"] <- "MANUAL ID"
 
     # Add additional columns if they exist
     if (!is.null(additional_cols) && length(additional_cols) > 0) {
